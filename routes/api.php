@@ -402,4 +402,27 @@ Route::middleware('auth:sanctum')->group(function () {
         'destroy',
     ])->middleware('permission:permissions-all|permissions-delete');
 
+
+    // RUTAS PARA ASISTENCIAS
+
+    Route::get('asistencia', [
+        \App\Http\Controllers\AsistenciaController::class,
+        'index',
+    ])->middleware('permission:permissions-all|permissions-view');
+
+    Route::post('asistencia', [
+        \App\Http\Controllers\AsistenciaController::class,
+        'store',
+    ])->middleware('permission:permissions-all|permissions-create');
+
+    Route::patch('asistencia/{asistenciaId}', [
+        \App\Http\Controllers\AsistenciaController::class,
+        'update',
+    ])->middleware('permission:permissions-all|permissions-edit');
+
+    Route::delete('asistencia/{asistenciaId}', [
+        \App\Http\Controllers\AsistenciaController::class,
+        'destroy',
+    ])->middleware('permission:permissions-all|permissions-delete');
+
 });

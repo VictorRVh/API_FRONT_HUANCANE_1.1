@@ -48,22 +48,4 @@ export default [
             permissions: ['products-all', 'products-view'],
         },
     },
-    {
-        path: '/products/create',
-        name: 'products-create',
-        component: () => import('../pages/Products.vue'),
-        meta: {
-            layout: 'dashboard',
-            permissions: ['products-all', 'products-create'],
-        },
-    },
-    {
-        path: '/products/:id/edit',
-        name: 'products-edit',
-        component: () => import('../pages/Products.vue'),
-        meta: {
-            layout: 'dashboard',
-            permissions: ['products-all', 'products-edit'],
-        },
-    },
 ];
