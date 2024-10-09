@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -425,4 +426,14 @@ Route::middleware('auth:sanctum')->group(function () {
         'destroy',
     ])->middleware('permission:permissions-all|permissions-delete');
 
+
+    // RUTAS PARA SERVICIOS
+
+    Route::get('/users-by-role/{role_id}', [UserController::class, 'getUsersByRole']);
+
 });
+
+
+
+
+

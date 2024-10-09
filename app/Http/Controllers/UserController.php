@@ -143,4 +143,14 @@ class UserController extends Controller
             return $this->errorResponse($error);
         }
     }
+
+    public function getUsersByRole($roleId)
+    {
+        $usuarios = User::whereHas('roles', function ($query) use ($roleId) {
+            $query->where('roles.id', $roleId); // Especifica la tabla 'roles' para el id
+        })->get();
+        
+
+        return response()->json($usuarios);
+    }
 }
