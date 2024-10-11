@@ -105,29 +105,6 @@ Route::middleware('auth:sanctum')->group(function () {
     ])->middleware('permission:permissions-all|permissions-delete');
 
 
-    // RUTA DE PRODUCTOS
-
-    Route::get('products', [
-        \App\Http\Controllers\ProductController::class,
-        'index',
-    ])->middleware('permission:products-all|products-view');
-
-    Route::post('products', [
-        \App\Http\Controllers\ProductController::class,
-        'store',
-    ])->middleware('permission:products-all|products-create');
-
-    Route::patch('products/{id}', [
-        \App\Http\Controllers\ProductController::class,
-        'update',
-    ])->middleware('permission:products-all|products-edit');
-
-    Route::delete('products/{id}', [
-        \App\Http\Controllers\ProductController::class,
-        'destroy',
-    ])->middleware('permission:products-all|products-delete');
-
-
     // RUTA DE SEDES
 
     Route::get('sedes', [
@@ -402,28 +379,6 @@ Route::middleware('auth:sanctum')->group(function () {
         \App\Http\Controllers\NotaExperienciaFormativaController::class,
         'destroy',
     ])->middleware('permission:permissions-all|permissions-delete');
-
-
-
-    Route::get('students', [
-        \App\Http\Controllers\StudentController::class,
-        'index',
-    ])->middleware('permission:students-all|students-view');
-    
-    Route::post('students', [
-        \App\Http\Controllers\StudentController::class,
-        'store',
-    ])->middleware('permission:students-all|students-create');
-    
-    Route::patch('students/{id}', [
-        \App\Http\Controllers\StudentController::class,
-        'update',
-    ])->middleware('permission:students-all|students-edit');
-    
-    Route::delete('students/{id}', [
-        \App\Http\Controllers\StudentController::class,
-        'destroy',
-    ])->middleware('permission:students-all|students-delete');
 });
 
 

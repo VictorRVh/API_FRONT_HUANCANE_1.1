@@ -38,16 +38,7 @@ export default [
             permissions: ['permissions-all', 'permissions-view'],
         },
     },
-
-    {
-        path: '/products',
-        name: 'products',
-        component: () => import('../pages/Products.vue'),
-        meta: {
-            layout: 'dashboard',
-            permissions: ['products-all', 'products-view'],
-        },
-    },
+    
     {
         path: '/especialidades',
         name: 'especialidades',
@@ -56,17 +47,7 @@ export default [
             layout: 'dashboard',
             permissions: ['specialties-all', 'specialties-view'],
         },
-    },
-    {
-        path: '/students',
-        name: 'Students',
-        component: () => import('../pages/Students.vue'),
-        meta: {
-            layout: 'dashboard',
-            permissions: ['students-all', 'students-view'],
-        }
-    },
-   
+    }
 
     /* todlos que se aumento */
 ];

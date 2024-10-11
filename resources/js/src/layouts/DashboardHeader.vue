@@ -96,18 +96,6 @@ const menuItems = [
     route: "permissions",
     permissions: ["permissions-all", "permissions-view"],
   },
-  {
-    name: "Productos",
-    icon: "ChartBarIcon",
-    route: "products",
-    permissions: ["products-all", "products-view"],
-  },
-  {
-    name: "Students",
-    icon: "ChartBarIcon",
-    route: "Students",
-    permissions: ["students-all", "students-view"],
-  },
 ];
 
 // Helper function to check if user has permission for the route

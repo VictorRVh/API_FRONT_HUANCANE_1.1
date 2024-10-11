@@ -1,7 +1,7 @@
 <script setup>
 // archivo EspecialidadSlider.vue
 import { computed, ref, watch } from "vue";
-import Slider from "../../ui/FormInput.vue";
+import Slider from "../../ui/Slider.vue";
 import FormInput from "../../ui/FormInput.vue";
 import FormLabelError from "../../ui/FormLabelError.vue";
 import VSelect from "vue-select";
