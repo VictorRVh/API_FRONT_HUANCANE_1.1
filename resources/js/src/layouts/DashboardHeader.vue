@@ -1,141 +1,212 @@
 <script setup>
-import { inject } from 'vue';
-import useHttpRequest from '../composables/useHttpRequest';
-import useUserStore from '../store/useUserStore';
-import useRoleStore from '../store/useRoleStore';
-import usePermissionStore from '../store/usePermissionStore';
-import useAppRouter from '../composables/useAppRouter';
+import { inject, computed } from "vue";
+import useHttpRequest from "../composables/useHttpRequest";
+import useUserStore from "../store/useUserStore";
+import useRoleStore from "../store/useRoleStore";
+import usePermissionStore from "../store/usePermissionStore";
+import useAppRouter from "../composables/useAppRouter";
 
-const { isDarkMode, updateDarkMode, windowWidth } = inject('theme');
-
-const { index: logout } = useHttpRequest('/logout');
+// Injecting theme and other global properties
+const { isDarkMode, updateDarkMode, windowWidth } = inject("theme");
+const { index: logout } = useHttpRequest("/logout");
 const { pushToRoute } = useAppRouter();
 
+// Stores
 const userStore = useUserStore();
 const roleStore = useRoleStore();
 const permissionStore = usePermissionStore();
 
-const onLogout = async () => {
-    const isLoggedOut = await logout();
-    if (isLoggedOut) {
-        userStore.setUser(null);
-        userStore.users = [];
-        roleStore.roles = [];
-        permissionStore.permissions = [];
+// Get user permissions
+const userPermissions = computed(
+  () => userStore.user?.permissions.map((p) => p.name) || []
+);
 
-        await pushToRoute({ name: 'login' });
-    }
+console.log("Victor ", userPermissions);
+
+// Logout function
+const onLogout = async () => {
+  const isLoggedOut = await logout();
+  if (isLoggedOut) {
+    userStore.setUser(null);
+    roleStore.roles = [];
+    permissionStore.permissions = [];
+    await pushToRoute({ name: "login" });
+  }
 };
+
+// Function to create menu items dynamically
+const menuItems = [
+  {
+    name: "Home",
+    icon: "HomeIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Docente",
+    icon: "UserIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Estudiante",
+    icon: "AcademicCapIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Matrícula",
+    icon: "BookOpenIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Especialidades",
+    icon: "BuildingOfficeIcon",
+    route: "especialidades",
+    permissions: ["specialties-all", "specialties-view"],
+  },
+  {
+    name: "Reportes",
+    icon: "ChartBarIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Certificados",
+    icon: "FolderIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Users",
+    icon: "UsersIcon",
+    route: "users",
+    permissions: ["users-all", "users-view"],
+  },
+  {
+    name: "Roles",
+    icon: "BookmarkIcon",
+    route: "roles",
+    permissions: ["roles-all", "roles-view"],
+  },
+  {
+    name: "Permissions",
+    icon: "BookmarkSquareIcon",
+    route: "permissions",
+    permissions: ["permissions-all", "permissions-view"],
+  },
+  {
+    name: "Productos",
+    icon: "ChartBarIcon",
+    route: "products",
+    permissions: ["products-all", "products-view"],
+  },
+  {
+    name: "Students",
+    icon: "ChartBarIcon",
+    route: "Students",
+    permissions: ["students-all", "students-view"],
+  },
+];
+
+// Helper function to check if user has permission for the route
+/*const hasPermission = (itemPermissions) => {
+  
+}; */
+const hasPermission = (itemPermissions) =>
+  itemPermissions.some((perm) => userPermissions.value.includes(perm));
+
+//itemPermissions.some((perm) => userPermissions.includes(perm));
+//['users-all', 'users-view'].some((perm) => userPermissions.includes(perm))
 </script>
 
 <template>
-    <div>
-        <!-- logo -->
-        <RouterLink :to="{ name: 'users' }">
-            <div class="text-3xl font-nabla hidden md:block">
-                <span class="logo-char animation-delay-100">R</span>
-                <span class="logo-char animation-delay-200">o</span>
-                <span class="logo-char animation-delay-300">l</span>
-                <span class="logo-char animation-delay-400">e</span>
-                <span class="">{{ ' ' }}</span>
-                <span class="logo-char animation-delay-500">P</span>
-                <span class="logo-char animation-delay-600">e</span>
-                <span class="logo-char animation-delay-700">r</span>
-                <span class="logo-char animation-delay-800">m</span>
-                <span class="logo-char animation-delay-900">i</span>
-                <span class="logo-char animation-delay-1000">s</span>
-                <span class="logo-char animation-delay-1100">s</span>
-                <span class="logo-char animation-delay-1200">i</span>
-                <span class="logo-char animation-delay-1300">o</span>
-                <span class="logo-char animation-delay-1400">n</span>
-                <span class="logo-char animation-delay-1500">s</span>
-            </div>
-            <div class="text-2xl font-nabla md:hidden">
-                <span class="logo-char animation-delay-100">R</span>
-                <span class="">{{ ' ' }}</span>
-                <span class="logo-char animation-delay-200">P</span>
-            </div>
-        </RouterLink>
+  <div class="flex flex-col h-full justify-center items-center text-center mt-5">
+    <!-- menu links -->
+    <div class="flex flex-col gap-8 lg:gap-1 flex-grow items-center w-full">
+      <RouterLink
+        v-for="item in menuItems"
+        :key="item.name"
+        v-show="hasPermission(item.permissions)"
+        :to="{ name: item.route }"
+        class="w-full flex pl-3 rounded hover:bg-gray-700"
+      >
+        <template v-slot="{ isActive }">
+          <span
+            class="lg:text-xs font-bold flex items-center justify-center p-2"
+            :class="[isActive ? 'text-blue-400' : 'text-gray-400']"
+          >
+            <component :is="item.icon" class="w-5 h-5 mb-2 mr-2" />
+            <p>{{ item.name }}</p>
+          </span>
+        </template>
+      </RouterLink>
 
-        <!-- menu links -->
+      <!-- Logout -->
+      <span
+        class="lg:text-lg font-bold hover:text-active-hover cursor-pointer text-red-200"
+        @click="onLogout"
+      >
+        Logout
+      </span>
 
-        <div class="flex-start gap-4 lg:gap-8">
-            <div class="flex flex-col gap-0.5">
-                <div class="flex-start gap-6 lg:gap-8">
-                    <RouterLink :to="{ name: 'users' }">
-                        <template v-slot="{ isActive }">
-                            <span class="lg:text-lg font-bold" :class="[
-                                isActive
-                                    ? 'text-active'
-                                    : 'hover:text-active-hover',
-                            ]">Users</span>
-                        </template>
-                    </RouterLink>
-
-                    <RouterLink :to="{ name: 'roles' }">
-                        <template v-slot="{ isActive }">
-                            <span class="lg:text-lg font-bold" :class="[
-                                isActive
-                                    ? 'text-active'
-                                    : 'hover:text-active-hover',
-                            ]">Roles</span>
-                        </template>
-                    </RouterLink>
-
-                    <RouterLink :to="{ name: 'permissions' }">
-                        <template v-slot="{ isActive }">
-                            <span class="lg:text-lg font-bold" :class="[
-                                isActive
-                                    ? 'text-active'
-                                    : 'hover:text-active-hover',
-                            ]">Permissions</span>
-                        </template>
-                    </RouterLink>
-
-                    <RouterLink :to="{ name: 'products' }">
-                        <template v-slot="{ isActive }">
-                            <span class="lg:text-lg font-bold" :class="[
-                                isActive ? 'text-active' : 'hover:text-active-hover',
-                            ]">Productos</span>
-                        </template>
-                    </RouterLink>
-
-                    <span class="lg:text-lg font-bold hover:text-active-hover cursor-pointer text-red-200"
-                        @click="onLogout">
-                        Logout
-                    </span>
-                </div>
-
-                <div v-if="userStore.user?.id" class="text-xs text-emerald-300 flex justify-end">
-                    {{ `${userStore.user?.name} (${userStore.user?.email})` }}
-                </div>
-            </div>
-
-            <!-- sun -->
-            <span v-if="isDarkMode" class="hover:text-active-hover cursor-pointer" @click="updateDarkMode(false)">
-                <svg viewBox="0 0 24 24" :width="windowWidth > 992 ? 24 : 18" :height="windowWidth > 992 ? 24 : 18"
-                    stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                    class="css-i6dzq1">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-            </span>
-
-            <span v-else class="hover:text-active-hover cursor-pointer" @click="updateDarkMode(true)">
-                <svg viewBox="0 0 24 24" :width="windowWidth > 992 ? 24 : 18" :height="windowWidth > 992 ? 24 : 18"
-                    stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                    class="css-i6dzq1">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </span>
-        </div>
+      <!-- Display user information -->
+      <div v-if="userStore.user?.id" class="text-xs text-emerald-300">
+        {{ `${userStore.user?.name} (${userStore.user?.email})` }}
+      </div>
     </div>
+
+    <!-- Dark mode toggle -->
+    <div class="flex items-center mt-auto">
+      <span
+        v-if="isDarkMode"
+        class="hover:text-active-hover cursor-pointer"
+        @click="updateDarkMode(false)"
+      >
+        <!-- Sun icon -->
+        <svg
+          viewBox="0 0 24 24"
+          :width="windowWidth > 992 ? 24 : 18"
+          :height="windowWidth > 992 ? 24 : 18"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="css-i6dzq1"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </span>
+      <span
+        v-else
+        class="hover:text-active-hover cursor-pointer"
+        @click="updateDarkMode(true)"
+      >
+        <!-- Moon icon -->
+        <svg
+          viewBox="0 0 24 24"
+          :width="windowWidth > 992 ? 24 : 18"
+          :height="windowWidth > 992 ? 24 : 18"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="css-i6dzq1"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 A7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </span>
+    </div>
+  </div>
 </template>
-../store/useAuthUserStore

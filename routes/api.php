@@ -178,22 +178,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('especialidad', [
         \App\Http\Controllers\EspecialidadController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:specialties-all|specialties-view');
 
     Route::post('especialidad', [
         \App\Http\Controllers\EspecialidadController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:specialties-all|specialties-create');
 
     Route::patch('especialidad/{especialidadId}', [
         \App\Http\Controllers\EspecialidadController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:specialties-all|specialties-edit');
 
     Route::delete('especialidad/{especialidadId}', [
         \App\Http\Controllers\EspecialidadController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:specialties-all|specialties-delete');
 
     
     // RUTA PARA PLANES
@@ -402,4 +402,25 @@ Route::middleware('auth:sanctum')->group(function () {
         'destroy',
     ])->middleware('permission:permissions-all|permissions-delete');
 
+
+
+    Route::get('students', [
+        \App\Http\Controllers\StudentController::class,
+        'index',
+    ])->middleware('permission:students-all|students-view');
+    
+    Route::post('students', [
+        \App\Http\Controllers\StudentController::class,
+        'store',
+    ])->middleware('permission:students-all|students-create');
+    
+    Route::patch('students/{id}', [
+        \App\Http\Controllers\StudentController::class,
+        'update',
+    ])->middleware('permission:students-all|students-edit');
+    
+    Route::delete('students/{id}', [
+        \App\Http\Controllers\StudentController::class,
+        'destroy',
+    ])->middleware('permission:students-all|students-delete');
 });

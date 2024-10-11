@@ -34,6 +34,18 @@ class PermissionTableSeeder extends Seeder
             'products-create',
             'products-edit',
             'products-delete',
+            ///Especialidades
+            'specialties-all',
+            'specialties-view',
+            'specialties-create',
+            'specialties-edit',
+            'specialties-delete',
+
+            'students-all',
+            'students-view',
+            'students-create',
+            'students-edit',
+            'students-delete',
         ];
 
         $permissions = array_map(function ($name) {

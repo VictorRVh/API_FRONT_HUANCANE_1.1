@@ -11,11 +11,7 @@ class EspecialidadController extends Controller
     public function index()
     {
         $especialidades = Especialidad::all();
-
-        return response()->json([
-            'status' => 200,
-            'especialidades' => $especialidades
-        ], 200);
+        return response()->json($especialidades);
     }
 
     /**

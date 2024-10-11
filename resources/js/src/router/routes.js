@@ -49,21 +49,24 @@ export default [
         },
     },
     {
-        path: '/products/create',
-        name: 'products-create',
-        component: () => import('../pages/Products.vue'),
+        path: '/especialidades',
+        name: 'especialidades',
+        component: () => import('../pages/Especialidad/Especialidades.vue'),
         meta: {
             layout: 'dashboard',
-            permissions: ['products-all', 'products-create'],
+            permissions: ['specialties-all', 'specialties-view'],
         },
     },
     {
-        path: '/products/:id/edit',
-        name: 'products-edit',
-        component: () => import('../pages/Products.vue'),
+        path: '/students',
+        name: 'Students',
+        component: () => import('../pages/Students.vue'),
         meta: {
             layout: 'dashboard',
-            permissions: ['products-all', 'products-edit'],
-        },
+            permissions: ['students-all', 'students-view'],
+        }
     },
+   
+
+    /* todlos que se aumento */
 ];
