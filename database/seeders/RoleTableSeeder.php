@@ -29,6 +29,22 @@ class RoleTableSeeder extends Seeder
                 'name' => 'editor',
                 'created_at' => now(),
             ],
+            [
+                'name' => 'subdirector',
+                'created_at' => now(),
+            ],
+            [
+                'name' => 'secretaria',
+                'created_at' => now(),
+            ],
+            [
+                'name' => 'docente',
+                'created_at' => now(),
+            ],
+            [
+                'name' => 'estudiante',
+                'created_at' => now(),
+            ],
         ];
 
         DB::table('roles')->insert($roles);

@@ -119,4 +119,23 @@ class EspecialidadController extends Controller
 
         return response()->json($data, 200);
     }
+
+    public function destroy($id)
+    {
+        $turno = Especialidad::find($id);
+
+        if (!$turno) {
+            return response()->json([
+                'message' => 'Especialidad no encontrada',
+                'status' => 404,
+            ], 404);
+        }
+
+        $turno->delete();
+
+        return response()->json([
+            'message' => 'Especialidad eliminada exitosamente',
+            'status' => 200,
+        ], 200);
+    }
 }

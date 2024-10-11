@@ -27,6 +27,12 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'name' => ['required'],
+                'apellido_paterno' => ['required'],
+                'apellido_materno' => ['required'],
+                'dni' => ['required', 'unique:users,dni'],
+                'sexo' => ['required'],
+                'celular' => ['required'],
+                'fecha_nacimiento' => ['required'],
                 'email' => ['required', 'email', 'unique:users,email'],
                 'password' => ['required'],
             ]);
@@ -62,6 +68,18 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'name' => ['required', 'sometimes'],
+                'apellido_paterno' => ['required', 'sometimes'],
+                'apellido_materno' => ['required', 'sometimes'],
+                'dni' => [
+                    'required',
+                    'sometimes',
+                    'string',
+                    'max:8',
+                    Rule::unique('users')->ignore($request->userId)
+                ],
+                'sexo' => ['required', 'sometimes', 'in:M,F'],
+                'celular' => ['required', 'sometimes', 'string', 'max:9'],
+                'fecha_nacimiento' => ['required', 'sometimes', 'date'],
                 'email' => [
                     'required',
                     'email',
@@ -142,5 +160,15 @@ class UserController extends Controller
         } catch (\Exception $error) {
             return $this->errorResponse($error);
         }
+    }
+
+    public function getUsersByRole($roleId)
+    {
+        $usuarios = User::whereHas('roles', function ($query) use ($roleId) {
+            $query->where('roles.id', $roleId); // Especifica la tabla 'roles' para el id
+        })->get();
+
+
+        return response()->json($usuarios);
     }
 }

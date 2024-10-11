@@ -34,7 +34,7 @@ const { omitPropsFromObject } = useUtils();
 const { showToast } = useModalToast();
 
 const requiredPermissions = computed(() => {
-    if (!props.product?.id) return ['products-all', 'products-view', 'products-create', 'products-edit', 'products-delete'];
+    if (!props.product?.id) return ['products-all','products-create'];
     else return ['products-all', 'products-edit'];
 });
 

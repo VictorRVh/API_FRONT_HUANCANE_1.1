@@ -115,7 +115,7 @@ const onDelete = (product) => {
 
 <template>
     <AuthorizationFallback
-        :permissions="['products-all', 'products-view', 'products-create', 'products-edit', 'products-delete']">
+        :permissions="['products-all', 'products-view']">
         <div class="w-full space-y-4 py-6">
             <div class="flex-between">
                 <h2 class="text-active font-bold text-2xl">Products</h2>
