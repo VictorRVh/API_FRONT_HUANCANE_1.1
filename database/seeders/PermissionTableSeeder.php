@@ -29,11 +29,7 @@ class PermissionTableSeeder extends Seeder
             'permissions-create',
             'permissions-edit',
             'permissions-delete',
-            'products-all',
-            'products-view',
-            'products-create',
-            'products-edit',
-            'products-delete',
+            
             ///Especialidades
             'specialties-all',
             'specialties-view',
