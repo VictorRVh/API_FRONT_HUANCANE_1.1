@@ -77,7 +77,8 @@ class UserController extends Controller
                     'max:8',
                     Rule::unique('users')->ignore($request->userId)
                 ],
-                'sexo' => ['required', 'sometimes', 'in:M,F'],
+                // 'sexo' => ['required', 'sometimes', 'in:M,F'],
+                'sexo' => ['required', 'sometimes'],
                 'celular' => ['required', 'sometimes', 'string', 'max:9'],
                 'fecha_nacimiento' => ['required', 'sometimes', 'date'],
                 'email' => [

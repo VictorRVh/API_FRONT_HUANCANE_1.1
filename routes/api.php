@@ -379,6 +379,10 @@ Route::middleware('auth:sanctum')->group(function () {
         \App\Http\Controllers\NotaExperienciaFormativaController::class,
         'destroy',
     ])->middleware('permission:permissions-all|permissions-delete');
+
+
+    Route::get('/users-by-role/{role_id}', [UserController::class, 'getUsersByRole']);
+
 });
 
 

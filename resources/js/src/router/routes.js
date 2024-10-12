@@ -47,6 +47,16 @@ export default [
             layout: 'dashboard',
             permissions: ['specialties-all', 'specialties-view'],
         },
+    },
+
+    {
+        path: '/estudiantes',
+        name: 'estudiantes',
+        component: () => import('../pages/Estudiante/Estudiante.vue'),
+        meta: {
+            layout: 'dashboard',
+            permissions: ['student-all', 'student-view'],
+        },
     }
 
     /* todlos que se aumento */
