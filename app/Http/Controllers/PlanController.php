@@ -117,7 +117,7 @@ class PlanController extends Controller
 
         return response()->json([
             'message' => 'Plan eliminado exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

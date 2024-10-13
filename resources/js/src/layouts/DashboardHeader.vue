@@ -52,7 +52,7 @@ const menuItems = [
     name: "Estudiante",
     icon: "AcademicCapIcon",
     route: "estudiantes",
-    permissions: ["users-all", "users-view"],
+    permissions: ["students-all", "students-view"],
   },
   {
     name: "Matrícula",

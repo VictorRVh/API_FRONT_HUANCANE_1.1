@@ -110,7 +110,7 @@ class MatriculaController extends Controller
 
         return response()->json([
             'message' => 'Matricula eliminada exitosamente',
-            'status' => 200
-        ], 200);
+            'status' => 204
+        ], 204);
     }
 }

@@ -128,7 +128,7 @@ class NotaUnidadDidacticaController extends Controller
 
         return response()->json([
             'message' => 'Nota eliminada exitosamente',
-            'status' => 200
-        ], 200);
+            'status' => 204
+        ], 204);
     }
 }

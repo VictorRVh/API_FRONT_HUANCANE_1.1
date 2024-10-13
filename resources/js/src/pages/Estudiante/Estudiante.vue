@@ -44,7 +44,7 @@ const onDelete = (user) => {
 </script>
 
 <template>
-    <AuthorizationFallback :permissions="['users-all', 'users-view']">
+    <AuthorizationFallback :permissions="['students-all', 'students-view']">
         <div class="w-full space-y-4 py-6">
             <div class="flex-between">
                 <h2 class="text-active font-bold text-2xl">Estudiantes</h2>

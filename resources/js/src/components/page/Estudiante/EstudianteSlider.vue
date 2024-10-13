@@ -40,8 +40,8 @@ const { omitPropsFromObject } = useUtils();
 const { showToast } = useModalToast();
 
 const requiredPermissions = computed(() => {
-  if (!props.user?.id) return ["users-all", "users-create"];
-  else return ["users-all", "users-edit"];
+  if (!props.user?.id) return ["students-all", "students-create"];
+  else return ["students-all", "students-edit"];
 });
 
 const title = computed(() =>
@@ -86,11 +86,13 @@ watch(
 
 const roleOptions = computed(() => {
   const formDataRoleIds = formData.value.roles.map((role) => role?.id?.toString());
+  console.log(formDataRoleIds)
   return roleStore.roles.filter(
     (role) =>
       !formDataRoleIds.includes(role?.id?.toString()) && role?.name !== "super-admin"
   );
 });
+
 
 const selectedRole = ref(null);
 const onRoleSelect = (role) => {

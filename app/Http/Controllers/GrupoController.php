@@ -127,7 +127,7 @@ class GrupoController extends Controller
 
         return response()->json([
             'message' => 'Grupo eliminado exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

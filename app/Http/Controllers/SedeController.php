@@ -126,7 +126,7 @@ class SedeController extends Controller
 
         return response()->json([
             'message' => 'Sede eliminada exitosamente',
-            'status' => 200
-        ], 200);
+            'status' => 204
+        ], 204);
     }
 }

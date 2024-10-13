@@ -119,7 +119,7 @@ class IndicadorLogroController extends Controller
 
         return response()->json([
             'message' => 'Indicador de logro eliminado exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }
