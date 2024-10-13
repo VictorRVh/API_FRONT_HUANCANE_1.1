@@ -33,8 +33,6 @@ const props = defineProps({
 // Emitir eventos
 const emit = defineEmits(["hide"]);
 
-console.log("esto lo que eimpre: ", props.specialty);
-
 // Stores
 const userStore = useUserStore();
 const roleStore = useRoleStore();
@@ -53,13 +51,15 @@ const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
 const requiredSpecialties = computed(() => {
-  if (!props.specialty?.id) return ["specialties-all", "specialties-create"];
+  if (!props.specialty?.id_especialidad) return ["specialties-all", "specialties-create"];
   else return ["specialties-all", "specialties-edit"];
 });
 
 // Computed para el título
 const title = computed(() =>
-  props.specialty ? `Update specialty "${props.specialty?.name}"` : "Add new specialty"
+  props.specialty
+    ? `Update specialty "${props.specialty?.nombre_especialidad}"`
+    : "Add new specialty"
 );
 
 // Inicialización del formulario
@@ -74,18 +74,17 @@ const formErrors = ref({});
 // Función para restablecer el formulario al abrir el modal
 watch(
   () => props.show,
-  () => {
-    if (props.show) {
-      if (props.specialty?.id) {
-        // Si hay una especialidad, cargar los datos para editar
-        formData.value = {
-          nombre_especialidad: props.specialty.nombre_especialidad || null,
-        };
+  (newValue) => {
+    if (newValue) {
+      if (props.specialty?.id_especialidad) {
+        formData.value = { nombre_especialidad: props.specialty.nombre_especialidad };
       } else {
-        // Si no, inicializar el formulario vacío para crear una nueva especialidad
         formData.value = initialFormData();
         formErrors.value = {};
       }
+    } else {
+      formData.value = initialFormData();
+      formErrors.value = {};
     }
   }
 );
@@ -114,13 +113,18 @@ const onSubmit = async () => {
   formErrors.value = {}; // Limpiar los errores
 
   // Crear o actualizar la especialidad
-  const response = props.specialty?.id
-    ? await updateSpecialty(props.specialty?.id, data)
+  const response = props.specialty?.id_especialidad
+    ? await updateSpecialty(props.specialty?.id_especialidad, data)
     : await createSpecialty(data);
 
   // Si la respuesta es exitosa
-  if (response?.id) {
-    showToast(`Specialty ${props.specialty?.id ? "updated" : "created"} successfully`);
+
+  console.log("response: ", response.especialidad);
+
+  if (response?.especialidad.id_especialidad) {
+    showToast(
+      `Specialty ${props.specialty?.id_especialidad ? "updated" : "created"} successfully`
+    );
 
     // Cargar datos actualizados en las tiendas
     specialtyStore.loadSpecialties();
@@ -149,8 +153,8 @@ const onSubmit = async () => {
         />
 
         <Button
-          :title="specialty?.id ? 'Save' : 'Create'"
-          :loading-title="specialty?.id ? 'Saving...' : 'Creating...'"
+          :title="specialty?.id_especialidad ? 'Save' : 'Create'"
+          :loading-title="specialty?.id_especialidad ? 'Saving...' : 'Creating...'"
           class="!w-full"
           :loading="saving || updating"
           key="submit-btn"

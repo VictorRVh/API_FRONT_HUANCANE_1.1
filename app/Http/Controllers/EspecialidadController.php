@@ -135,7 +135,7 @@ class EspecialidadController extends Controller
 
         return response()->json([
             'message' => 'Especialidad eliminada exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

@@ -38,6 +38,9 @@ const onDelete = (permission) => {
     if (!confirmed) return;
 
     const isDeleted = await deletePermission(permission?.id);
+
+    console.log("pasod eleinar  cosmlas: ", isDeleted);
+
     if (isDeleted) {
       showToast(`Permission "${permission?.name}" deleted successfully...`);
       permissionStore.loadPermissions();

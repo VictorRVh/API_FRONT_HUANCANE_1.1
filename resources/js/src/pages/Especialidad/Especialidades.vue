@@ -40,9 +40,10 @@ const onDelete = (specialty) => {
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(specialty?.id);
+    const isDeleted = await deleteSpecialy(specialty?.id_especialidad);
+    console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Specialty "${specialty?.name}" deleted successfully...`);
+      showToast(`Specialty "${specialty?.nombre_especialidad}" deleted successfully...`);
       specialtiesStore.loadSpecialties();
       userStore.loadUsers();
       roleStore.loadRoles();
@@ -85,22 +86,8 @@ const onDelete = (specialty) => {
 
               <Td class="align-middle">
                 <div class="flex flex-col gap-2">
-                  <EditButton
-                    @click="
-                      showSlider(true, {
-                        name: specialty?.nombre_especialidad,
-                        id: specialty?.id_especialidad,
-                      })
-                    "
-                  />
-                  <DeleteButton
-                    @click="
-                      onDelete({
-                        name: specialty?.nombre_especialidad,
-                        id: specialty?.id_especialidad,
-                      })
-                    "
-                  />
+                  <EditButton @click="showSlider(true, specialty)" />
+                  <DeleteButton @click="onDelete(specialty)" />
                 </div>
               </Td>
             </Tr>
@@ -109,6 +96,6 @@ const onDelete = (specialty) => {
       </div>
     </div>
 
-    <SpecialtySlider :show="slider" :permission="sliderData" @hide="hideSlider" />
+    <SpecialtySlider :show="slider" :specialty="sliderData" @hide="hideSlider" />
   </AuthorizationFallback>
 </template>

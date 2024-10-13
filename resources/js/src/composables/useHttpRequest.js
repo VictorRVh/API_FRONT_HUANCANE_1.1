@@ -76,7 +76,7 @@ const useHttpRequest = (path = '') => {
             deleting.value = true;
             const response = await axios.delete(`${path}/${id}`);
             deleting.value = false;
-
+            console.log("Eliminado :..",response)
             if (typeof callback === 'function') {
                 callback(null, response);
             }
