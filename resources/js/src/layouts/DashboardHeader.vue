@@ -51,7 +51,7 @@ const menuItems = [
   {
     name: "Estudiante",
     icon: "AcademicCapIcon",
-    route: "users",
+    route: "estudiantes",
     permissions: ["users-all", "users-view"],
   },
   {
