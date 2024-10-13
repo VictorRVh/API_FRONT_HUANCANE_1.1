@@ -42,7 +42,8 @@ const { omitPropsFromObject } = useUtils();
 const { showToast } = useModalToast();
 
 const requiredPermissions = computed(() => {
-  if (!props.user?.id) return ["users-all", "users-create"];
+  if (!props.user?.id)
+    return ["users-all", "users-create", "students-create", "students-all"];
   else return ["users-all", "users-edit"];
 });
 

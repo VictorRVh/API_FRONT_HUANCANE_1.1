@@ -55,7 +55,7 @@ export default [
         component: () => import('../pages/Estudiante/Estudiante.vue'),
         meta: {
             layout: 'dashboard',
-            permissions: ['student-all', 'student-view'],
+            permissions: ['students-all', 'students-view'],
         },
     }
 
