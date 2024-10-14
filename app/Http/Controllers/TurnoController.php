@@ -110,7 +110,7 @@ class TurnoController extends Controller
 
         return response()->json([
             'message' => 'Turno eliminado exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

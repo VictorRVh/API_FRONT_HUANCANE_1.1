@@ -119,7 +119,7 @@ class ProgramaController extends Controller
 
         return response()->json([
             'message' => 'Programa eliminado exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

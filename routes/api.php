@@ -42,12 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('users', [
         \App\Http\Controllers\UserController::class,
         'store',
-    ])->middleware('permission:users-all|users-create');
+    ])->middleware('permission:users-all|students-all|users-create');
 
     Route::patch('users/{userId}', [
         \App\Http\Controllers\UserController::class,
         'update',
-    ])->middleware('permission:users-all|users-edit');
+    ])->middleware('permission:users-all|students-all|users-edit');
 
     Route::delete('users/{userId}', [
         \App\Http\Controllers\UserController::class,

@@ -119,7 +119,7 @@ class UnidadDidacticaController extends Controller
 
         return response()->json([
             'message' => 'Unidad didáctica eliminada exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

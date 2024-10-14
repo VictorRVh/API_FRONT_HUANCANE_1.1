@@ -119,7 +119,7 @@ class ExperienciaFormativaController extends Controller
 
         return response()->json([
             'message' => 'Experiencia formativa eliminada exitosamente',
-            'status' => 200,
-        ], 200);
+            'status' => 204,
+        ], 204);
     }
 }

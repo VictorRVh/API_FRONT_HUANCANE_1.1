@@ -54,6 +54,12 @@ const title = computed(() =>
 const initialFormData = () => {
   return {
     name: null,
+    apellido_paterno: null,
+    apellido_materno: null,
+    dni: null, 
+    sexo: null,
+    celular: null,
+    fecha_nacimiento: null,
     email: null,
     password: null,
     confirm_password: null,
@@ -83,11 +89,13 @@ watch(
 
 const roleOptions = computed(() => {
   const formDataRoleIds = formData.value.roles.map((role) => role?.id?.toString());
+  console.log(formDataRoleIds)
   return roleStore.roles.filter(
     (role) =>
       !formDataRoleIds.includes(role?.id?.toString()) && role?.name !== "super-admin"
   );
 });
+
 
 const selectedRole = ref(null);
 const onRoleSelect = (role) => {
@@ -110,12 +118,17 @@ const onRoleRemove = (role) => {
 
 const schema = yup.object().shape({
   name: yup.string().nullable().required(),
+  apellido_paterno: yup.string().nullable().required(),
+  apellido_materno: yup.string().nullable().required(),
+  dni: yup.string().nullable().required(),
+  sexo: yup.string().nullable().required(),
+  celular: yup.string().nullable().required(),
+  fecha_nacimiento: yup.date().nullable().required(),
   email: yup.string().email().nullable().required(),
   password: yup
     .string()
     .nullable()
     .test("password-test", "", (value, { createError }) => {
-      // always mark as validated on editing.
       if (props.user?.id) return true;
 
       if (!value) return createError({ message: "Password is a required field" });
@@ -125,6 +138,7 @@ const schema = yup.object().shape({
       return true;
     }),
 });
+
 
 const onSubmit = async () => {
   if (saving.value || updating.value) return;
@@ -170,6 +184,55 @@ const onSubmit = async () => {
           :focus="show"
           label="Name"
           :error="formErrors?.name"
+          required
+        />
+
+        <FormInput
+          v-model="formData.apellido_paterno"
+          :focus="show"
+          label="Apellido Paterno"
+          :error="formErrors?.apellido_paterno"
+          required
+        />
+
+        <FormInput
+          v-model="formData.apellido_materno"
+          :focus="show"
+          label="Apellido Materno"
+          :error="formErrors?.apellido_materno"
+          required
+        />
+
+        <FormInput
+          v-model="formData.dni"
+          :focus="show"
+          label="Dni"
+          :error="formErrors?.dni"
+          required
+        />
+
+        <FormInput
+          v-model="formData.sexo"
+          :focus="show"
+          label="Sexo"
+          :error="formErrors?.sexo"
+          required
+        />
+
+        <FormInput
+          v-model="formData.celular"
+          :focus="show"
+          label="Celular"
+          :error="formErrors?.celular"
+          required
+        />
+
+        <FormInput
+          v-model="formData.fecha_nacimiento"
+          :focus="show"
+          label="Fecha de Nacimiento"
+          type="date"
+          :error="formErrors?.fecha_nacimiento"
           required
         />
 

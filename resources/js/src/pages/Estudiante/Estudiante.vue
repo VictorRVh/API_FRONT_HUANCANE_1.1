@@ -44,10 +44,17 @@ const onDelete = (user) => {
 </script>
 
 <template>
+<<<<<<< HEAD
   <AuthorizationFallback :permissions="['students-all', 'students-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
         <h2 class="text-active font-bold text-2xl">Estudiantes</h2>
+=======
+    <AuthorizationFallback :permissions="['students-all', 'students-view']">
+        <div class="w-full space-y-4 py-6">
+            <div class="flex-between">
+                <h2 class="text-active font-bold text-2xl">Estudiantes</h2>
+>>>>>>> a8c5941e5c87ed9c26a121434c13f215ee2cd1bc
 
         <CreateButton @click="showSlider(true)" />
       </div>
