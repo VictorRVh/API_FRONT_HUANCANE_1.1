@@ -21,8 +21,6 @@ const userPermissions = computed(
   () => userStore.user?.permissions.map((p) => p.name) || []
 );
 
-console.log("Victor ", userPermissions);
-
 // Logout function
 const onLogout = async () => {
   const isLoggedOut = await logout();
@@ -61,9 +59,9 @@ const menuItems = [
     permissions: ["users-all", "users-view"],
   },
   {
-    name: "Especialidades",
+    name: "Especialidad",
     icon: "BuildingOfficeIcon",
-    route: "especialidades",
+    route: "especialidad",
     permissions: ["specialties-all", "specialties-view"],
   },
   {
@@ -99,54 +97,14 @@ const menuItems = [
 ];
 
 // Helper function to check if user has permission for the route
-/*const hasPermission = (itemPermissions) => {
-  
-}; */
 const hasPermission = (itemPermissions) =>
   itemPermissions.some((perm) => userPermissions.value.includes(perm));
-
-//itemPermissions.some((perm) => userPermissions.includes(perm));
-//['users-all', 'users-view'].some((perm) => userPermissions.includes(perm))
 </script>
 
 <template>
-  <div class="flex flex-col h-full justify-center items-center text-center mt-5">
-    <!-- menu links -->
-    <div class="flex flex-col gap-8 lg:gap-1 flex-grow items-center w-full">
-      <RouterLink
-        v-for="item in menuItems"
-        :key="item.name"
-        v-show="hasPermission(item.permissions)"
-        :to="{ name: item.route }"
-        class="w-full flex pl-3 rounded hover:bg-gray-700"
-      >
-        <template v-slot="{ isActive }">
-          <span
-            class="lg:text-xs font-bold flex items-center justify-center p-2"
-            :class="[isActive ? 'text-blue-400' : 'text-gray-400']"
-          >
-            <component :is="item.icon" class="w-5 h-5 mb-2 mr-2" />
-            <p>{{ item.name }}</p>
-          </span>
-        </template>
-      </RouterLink>
-
-      <!-- Logout -->
-      <span
-        class="lg:text-lg font-bold hover:text-active-hover cursor-pointer text-red-200"
-        @click="onLogout"
-      >
-        Logout
-      </span>
-
-      <!-- Display user information -->
-      <div v-if="userStore.user?.id" class="text-xs text-emerald-300">
-        {{ `${userStore.user?.name} (${userStore.user?.email})` }}
-      </div>
-    </div>
-
+  <div class="flex flex-col h-full justify-center items-center text-center mt-5 relative">
     <!-- Dark mode toggle -->
-    <div class="flex items-center mt-auto">
+    <div class="absolute top-4 right-4 flex items-center">
       <span
         v-if="isDarkMode"
         class="hover:text-active-hover cursor-pointer"
@@ -195,6 +153,41 @@ const hasPermission = (itemPermissions) =>
           <path d="M21 12.79A9 9 0 1 1 11.21 3 A7 7 0 0 0 21 12.79z"></path>
         </svg>
       </span>
+    </div>
+
+    <div class="flex flex-col gap-8 lg:gap-1 flex-grow items-center w-full">
+      <RouterLink
+        v-for="item in menuItems"
+        :key="item.name"
+        v-show="hasPermission(item.permissions)"
+        :to="{ name: item.route }"
+        class="w-full flex pl-3 rounded hover:bg-gray-700"
+      >
+        <template v-slot="{ isActive }">
+          <span
+            class="lg:text-xs font-bold flex items-center justify-center p-2"
+            :class="[isActive ? 'text-blue-400' : 'text-gray-400']"
+          >
+            <component :is="item.icon" class="w-5 h-5 mb-2 mr-2" />
+            <p>{{ item.name }}</p>
+          </span>
+        </template>
+      </RouterLink>
+
+      <!-- Logout -->
+      <span
+        class="lg:text-lg font-bold hover:text-active-hover cursor-pointer text-red-200"
+        @click="onLogout"
+      >
+        Logout
+      </span>
+
+      <!-- Display user information 
+      <div v-if="userStore.user?.id" class="text-xs text-emerald-300">
+        {{ `${userStore.user?.name} (${userStore.user?.email})` }}
+      </div>
+      
+      -->
     </div>
   </div>
 </template>

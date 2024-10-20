@@ -4,8 +4,13 @@ import { ref } from "vue";
 import DashboardHeader from "./DashboardHeader.vue";
 import PageLoader from "./PageLoader.vue";
 import SuspenseFallback from "./SuspenseFallback.vue";
+import useUserStore from "../store/useUserStore";
+
+const userStore = useUserStore();
 
 const asyncLoading = ref(false);
+
+//console.log("usuriao,", userStore.user);
 </script>
 
 <template>
@@ -21,8 +26,11 @@ const asyncLoading = ref(false);
     <main class="flex-1 h-full relative">
       <div class="flex justify-end p-4">
         <div class="text-right">
-          <p class="text-sm">Nombre de Usuario</p>
-          <p class="text-xs text-gray-500">correo@example.com</p>
+          <p class="text-sm">
+            {{ userStore.user?.name }}
+            {{ userStore.user?.apellido_paterno }}
+          </p>
+          <p class="text-xs text-gray-500">{{ userStore.user.roles[0]?.name }}</p>
         </div>
       </div>
 

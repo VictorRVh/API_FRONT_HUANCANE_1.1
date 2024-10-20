@@ -38,15 +38,26 @@ export default [
             permissions: ['permissions-all', 'permissions-view'],
         },
     },
-    
+
     {
-        path: '/especialidades',
-        name: 'especialidades',
+        path: '/especialidad',
+        name: 'especialidad',
         component: () => import('../pages/Especialidad/Especialidades.vue'),
         meta: {
             layout: 'dashboard',
             permissions: ['specialties-all', 'specialties-view'],
         },
+    },
+
+    {
+        path: '/especialidad/:idEspecialidad/planes',
+        name: 'PlanesFormativos',
+        component: ()=>import('../pages/Especialidad/PlanFormativo.vue'),
+        props: true, // Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+           // permissions: ['plan-all', 'plan-view'],
+        }
     },
 
     {

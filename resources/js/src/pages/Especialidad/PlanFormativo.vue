@@ -1,7 +1,7 @@
 <script setup>
 // Importa useRouter de Vue Router
 import { useRouter } from "vue-router";
-
+import { onMounted } from "vue";
 import Table from "../../components/table/Table.vue";
 import THead from "../../components/table/THead.vue";
 import TBody from "../../components/table/TBody.vue";
@@ -13,9 +13,11 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import SpecialtySlider from "../../components/page/Especialidad/EspecialidadSlider.vue";
+import PlanSlider from "../../components/page/Especialidad/PlanFormativaSlider.vue";
 
-import useSpecialtyStore from "../../store/Especialidad/useEspecialidadStore";
+import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
+import useSpecialty from "../../store/Especialidad/useEspecialidadStore";
+
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
@@ -28,28 +30,28 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const specialtiesStore = useSpecialtyStore();
+const planStore = usePlanStore();
+const specialtyStore = useSpecialty();
+// planStore.plans.plan
 
-// specialtyStore.specialties.especialidades
+if (!planStore.plans.length) await planStore.loadPlans();
 
-if (!specialtiesStore.specialties.length) await specialtiesStore.loadSpecialties();
-
-const { slider, sliderData, showSlider, hideSlider } = useSlider("specialty-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("plan-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/especialidad");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/plan");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (specialty) => {
+const onDelete = (plan) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(specialty?.id_especialidad);
+    const isDeleted = await deleteSpecialy(plan?.id_plan);
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Specialty "${specialty?.nombre_especialidad}" deleted successfully...`);
-      specialtiesStore.loadSpecialties();
+      showToast(`plan "${plan?.nombre_plan}" deleted successfully...`);
+      planStore.loadPlans();
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -58,19 +60,42 @@ const onDelete = (specialty) => {
 };
 
 const SeeMore = (id) => {
-  router.push({
+  /*router.push({
     name: "PlanesFormativos",
-    params: { idEspecialidad: id },
+    params: { idplan: id },
   });
+  */
 };
+
+// Obtener el objeto de la ruta actual
+const props = defineProps({
+  idEspecialidad: {
+    type: Number,
+    default: null,
+  },
+});
+// Acceder al parámetro de la ruta
+
+// Ahora puedes usar `idEspecialidad` en tu componente
+//console.log("ruta s", props.idEspecialidad);
+
+// Cargar la especialidad correspondiente cuando se monta el componente
+onMounted(async () => {
+  if (props.idEspecialidad) {
+    await specialtyStore.loadSpecialtyById(props.idEspecialidad);
+  }
+});
+
+//console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['specialties-all', 'specialties-view']">
+  <AuthorizationFallback :permissions="['plan-all', 'plan-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">Specialties</h2>
-
+        <h2 class="text-active font-bold text-2xl">
+          {{ specialtyStore.specialty?.nombre_especialidad }} / Plan
+        </h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -79,28 +104,25 @@ const SeeMore = (id) => {
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> Specialties </Th>
+              <Th> plans </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
-            <Tr
-              v-for="specialty in specialtiesStore.specialties"
-              :key="specialty.id_especialidad"
-            >
-              <Td>{{ specialty?.id_especialidad }}</Td>
+            <Tr v-for="plan in planStore.plans" :key="plan.id_plan">
+              <Td>{{ plan?.id_plan }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ specialty?.nombre_especialidad }}
+                  {{ plan?.nombre_plan }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(specialty?.id_especialidad)" />
-                  <EditButton @click="showSlider(true, specialty)" />
-                  <DeleteButton @click="onDelete(specialty)" />
+                  <ViewButton @click="SeeMore(plan?.id_plan)" />
+                  <EditButton @click="showSlider(true, plan)" />
+                  <DeleteButton @click="onDelete(plan)" />
                 </div>
               </Td>
             </Tr>
@@ -109,6 +131,11 @@ const SeeMore = (id) => {
       </div>
     </div>
 
-    <SpecialtySlider :show="slider" :specialty="sliderData" @hide="hideSlider" />
+    <PlanSlider
+      :specialty="props.idEspecialidad"
+      :show="slider"
+      :plan="sliderData"
+      @hide="hideSlider"
+    />
   </AuthorizationFallback>
 </template>

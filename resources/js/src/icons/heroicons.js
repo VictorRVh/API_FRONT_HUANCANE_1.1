@@ -16,6 +16,9 @@ const icons = {
   FolderIcon: defineAsyncComponent(() => import('@heroicons/vue/24/solid/FolderIcon')), 
   BookmarkIcon: defineAsyncComponent(() => import('@heroicons/vue/24/solid/BookmarkIcon')), 
   BookmarkSquareIcon: defineAsyncComponent(() => import('@heroicons/vue/24/solid/BookmarkSquareIcon')), 
+  EyeIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/EyeIcon')),
+  PencilSquareIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/PencilSquareIcon')),
+  TrashIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/TrashIcon')),
   // Agrega más íconos aquí según sea necesario academic-
 };
 

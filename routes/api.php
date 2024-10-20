@@ -157,6 +157,11 @@ Route::middleware('auth:sanctum')->group(function () {
         \App\Http\Controllers\EspecialidadController::class,
         'index',
     ])->middleware('permission:specialties-all|specialties-view');
+    
+    Route::get('especialidad/{especialidadId}', [
+        \App\Http\Controllers\EspecialidadController::class,
+        'show',
+    ])->middleware('permission:specialties-all|specialties-view');
 
     Route::post('especialidad', [
         \App\Http\Controllers\EspecialidadController::class,
@@ -179,22 +184,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('plan', [
         \App\Http\Controllers\PlanController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:plan-all|plan-view');
 
     Route::post('plan', [
         \App\Http\Controllers\PlanController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:plan-all|plan-create');
 
     Route::patch('plan/{planId}', [
         \App\Http\Controllers\PlanController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:plan-all|plan-edit');
 
     Route::delete('plan/{planId}', [
         \App\Http\Controllers\PlanController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:plan-all|plan-delete');
 
 
     // RUTA PARA PROGRAMAS

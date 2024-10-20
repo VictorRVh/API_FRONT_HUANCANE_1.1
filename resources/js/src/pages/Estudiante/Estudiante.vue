@@ -7,6 +7,8 @@ import Th from "../../components/table/Th.vue";
 import Td from "../../components/table/Td.vue";
 import CreateButton from "../../components/ui/CreateButton.vue";
 import EditButton from "../../components/ui/EditButton.vue";
+import ViewButton from "../../components/ui/ViewButton.vue";
+
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
 import EstudianteSlider from "../../components/page/Estudiante/EstudianteSlider.vue";
@@ -44,17 +46,10 @@ const onDelete = (user) => {
 </script>
 
 <template>
-<<<<<<< HEAD
   <AuthorizationFallback :permissions="['students-all', 'students-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
         <h2 class="text-active font-bold text-2xl">Estudiantes</h2>
-=======
-    <AuthorizationFallback :permissions="['students-all', 'students-view']">
-        <div class="w-full space-y-4 py-6">
-            <div class="flex-between">
-                <h2 class="text-active font-bold text-2xl">Estudiantes</h2>
->>>>>>> a8c5941e5c87ed9c26a121434c13f215ee2cd1bc
 
         <CreateButton @click="showSlider(true)" />
       </div>
@@ -103,7 +98,8 @@ const onDelete = (user) => {
               </Td>
 
               <Td class="align-middle">
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2 justify-center items-center">
+                  <ViewButton />
                   <EditButton @click="showSlider(true, user)" />
                   <DeleteButton @click="onDelete(user)" />
                 </div>

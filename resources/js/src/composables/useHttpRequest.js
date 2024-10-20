@@ -30,7 +30,26 @@ const useHttpRequest = (path = '') => {
             return handleError(error, [], callback, false);
         }
     };
+    // Método para obtener un solo registro por ID
+    const show = async (id, callback = null) => {
+        try {
+            loading.value = true;
+            const response = await axios.get(`${path}/${id}`);
+            loading.value = false;
 
+            if (typeof callback === 'function') {
+                callback(null, response);
+            }
+
+            if (response.data) {
+                return response.data;
+            }
+            return null;
+        } catch (error) {
+            loading.value = false;
+            return handleError(error, null, callback);
+        }
+    };
     const store = async (data, callback = null) => {
         try {
 
@@ -78,7 +97,7 @@ const useHttpRequest = (path = '') => {
             deleting.value = true;
             const response = await axios.delete(`${path}/${id}`);
             deleting.value = false;
-            console.log("Eliminado :..",response)
+            //console.log("Eliminado :..",response)
             if (typeof callback === 'function') {
                 callback(null, response);
             }
@@ -103,10 +122,9 @@ const useHttpRequest = (path = '') => {
             const errorData = error.response.data;
             if ([13333, 13334, 13335].includes(errorData?.errorCode)) {
                 showToast(
-                    `${errorData?.errorMessage}${
-                        errorData?.errorText
-                            ? `\r\n${errorData?.errorText}`
-                            : ''
+                    `${errorData?.errorMessage}${errorData?.errorText
+                        ? `\r\n${errorData?.errorText}`
+                        : ''
                     }`,
                     errorData?.errorCode === 13334 ? 'success' : 'error',
                 );
@@ -118,12 +136,11 @@ const useHttpRequest = (path = '') => {
                 error.response.data?.message === 'Permission not granted.'
             ) {
                 showToast(
-                    `${error.response.data?.message}${
-                        error.response.data?.permissions?.length
-                            ? `\r\nRequired permissions: ${error.response.data?.permissions.join(
-                                  ' or ',
-                              )}`
-                            : ''
+                    `${error.response.data?.message}${error.response.data?.permissions?.length
+                        ? `\r\nRequired permissions: ${error.response.data?.permissions.join(
+                            ' or ',
+                        )}`
+                        : ''
                     }`,
                     'error',
                 );
@@ -145,6 +162,7 @@ const useHttpRequest = (path = '') => {
         deleting,
 
         index,
+        show,
         store,
         update,
         destroy,
