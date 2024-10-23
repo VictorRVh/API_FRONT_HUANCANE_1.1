@@ -184,22 +184,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('plan', [
         \App\Http\Controllers\PlanController::class,
         'index',
-    ])->middleware('permission:plan-all|plan-view');
+    ])->middleware('permission:permissions-all|plan-view');
 
     Route::post('plan', [
         \App\Http\Controllers\PlanController::class,
         'store',
-    ])->middleware('permission:plan-all|plan-create');
+    ])->middleware('permission:permissions-all|plan-create');
 
     Route::patch('plan/{planId}', [
         \App\Http\Controllers\PlanController::class,
         'update',
-    ])->middleware('permission:plan-all|plan-edit');
+    ])->middleware('permission:permissions-all|plan-edit');
 
     Route::delete('plan/{planId}', [
         \App\Http\Controllers\PlanController::class,
         'destroy',
-    ])->middleware('permission:plan-all|plan-delete');
+    ])->middleware('permission:permissions-all|plan-delete');
+
+    Route::get('especialidad/{id}/detalles', [
+        \App\Http\Controllers\PlanController::class,
+        'getEspecialidadConPlanProgramasUnidades',
+    ])->middleware('permission:permissions-all|plan-delete');
 
 
     // RUTA PARA PROGRAMAS

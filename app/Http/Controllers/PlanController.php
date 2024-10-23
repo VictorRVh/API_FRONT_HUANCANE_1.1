@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Especialidad;
 use App\Models\Planes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -119,5 +120,18 @@ class PlanController extends Controller
             'message' => 'Plan eliminado exitosamente',
             'status' => 204,
         ], 204);
+    }
+
+    public function getEspecialidadConPlanProgramasUnidades($id_especialidad)
+    {
+        $especialidad = Especialidad::with(['planes.programas.unidadesDidacticas'])
+            ->where('id_especialidad', $id_especialidad)
+            ->first();
+
+        if (!$especialidad) {
+            return response()->json(['message' => 'Especialidad no encontrada'], 404);
+        }
+
+        return response()->json($especialidad, 200);
     }
 }
