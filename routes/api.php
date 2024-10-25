@@ -216,6 +216,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:permissions-all|permissions-view');
 
+    Route::get('planPrograma/{id}', [
+        \App\Http\Controllers\ProgramaController::class,
+        'getPlanPrograma',
+    ])->middleware('permission:permissions-all|plan-delete');
+
     Route::post('programa', [
         \App\Http\Controllers\ProgramaController::class,
         'store',
