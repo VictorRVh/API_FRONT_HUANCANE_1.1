@@ -124,7 +124,7 @@ const onSubmit = async () => {
     showToast(`plan ${props.plan?.id_plan ? "updated" : "created"} successfully`);
 
     // Cargar datos actualizados en las tiendas
-    planStore.loadPlans();
+    planStore.loadPlanByIdEsp(props.specialty);
     userStore.loadUsers();
     roleStore.loadRoles();
     isUserAuthenticated();

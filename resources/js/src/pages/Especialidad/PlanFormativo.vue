@@ -16,7 +16,6 @@ import AuthorizationFallback from "../../components/page/AuthorizationFallback.v
 import PlanSlider from "../../components/page/Especialidad/PlanFormativaSlider.vue";
 
 import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
-import useSpecialty from "../../store/Especialidad/useEspecialidadStore";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -26,15 +25,29 @@ import useRoleStore from "../../store/useRoleStore";
 import useUserStore from "../../store/useUserStore";
 import useAuth from "../../composables/useAuth";
 
+// Obtener el objeto de la ruta actual
+const props = defineProps({
+  idEspecialidad: {
+    type: Number,
+    default: null,
+  },
+});
+// Acceder al parámetro de la ruta
+
+// Ahora puedes usar `idEspecialidad` en tu componente
+//console.log("ruta s", props.idEspecialidad);
+
+// Cargar la especialidad correspondiente cuando se monta el componente
+
 const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
 const planStore = usePlanStore();
-const specialtyStore = useSpecialty();
+
 // planStore.plans.plan
 
-if (!planStore.plans.length) await planStore.loadPlans();
+if (!planStore.plans.length) await planStore.loadPlanByIdEsp(props.idEspecialidad);
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("plan-crud");
 const { showConfirmModal, showToast } = useModalToast();
@@ -51,7 +64,7 @@ const onDelete = (plan) => {
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
       showToast(`plan "${plan?.nombre_plan}" deleted successfully...`);
-      planStore.loadPlans();
+      planStore.loadPlanByIdEsp(props.idEspecialidad);
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -67,24 +80,7 @@ const SeeMore = (id) => {
   */
 };
 
-// Obtener el objeto de la ruta actual
-const props = defineProps({
-  idEspecialidad: {
-    type: Number,
-    default: null,
-  },
-});
-// Acceder al parámetro de la ruta
-
-// Ahora puedes usar `idEspecialidad` en tu componente
-//console.log("ruta s", props.idEspecialidad);
-
-// Cargar la especialidad correspondiente cuando se monta el componente
-onMounted(async () => {
-  if (props.idEspecialidad) {
-    await specialtyStore.loadSpecialtyById(props.idEspecialidad);
-  }
-});
+console.log("nuievos planes: ", planStore.plans?.planes);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
@@ -94,7 +90,7 @@ onMounted(async () => {
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
         <h2 class="text-active font-bold text-2xl">
-          {{ specialtyStore.specialty?.nombre_especialidad }} / Plan
+          {{ planStore.plans?.nombre_especialidad }} / Plan
         </h2>
         <CreateButton @click="showSlider(true)" />
       </div>
@@ -110,7 +106,7 @@ onMounted(async () => {
           </THead>
 
           <TBody>
-            <Tr v-for="plan in planStore.plans" :key="plan.id_plan">
+            <Tr v-for="plan in planStore.plans.planes" :key="plan.id_plan">
               <Td>{{ plan?.id_plan }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
@@ -132,7 +128,7 @@ onMounted(async () => {
     </div>
 
     <PlanSlider
-      :specialty="props.idEspecialidad"
+      :specialty="planStore.plans?.id_especialidad"
       :show="slider"
       :plan="sliderData"
       @hide="hideSlider"
