@@ -23,7 +23,6 @@ class PlanController extends Controller
         // Validación
         $validator = Validator::make($request->all(), [
             'nombre_plan' => 'required|string|max:255',
-            'id_especialidad' => 'required|exists:especialidades,id_especialidad',
         ]);
 
         if ($validator->fails()) {
@@ -78,7 +77,6 @@ class PlanController extends Controller
         // Validación
         $validator = Validator::make($request->all(), [
             'nombre_plan' => 'string|max:255',
-            'id_especialidad' => 'exists:especialidades,id_especialidad',
         ]);
 
         if ($validator->fails()) {
@@ -122,9 +120,9 @@ class PlanController extends Controller
         ], 204);
     }
 
-    public function getEspecialidadConPlanProgramasUnidades($id_especialidad)
+    public function getEspecialidadPrograma($id_especialidad)
     {
-        $especialidad = Especialidad::with(['planes.programas.unidadesDidacticas'])
+        $especialidad = Especialidad::with(['programas.plan'])
             ->where('id_especialidad', $id_especialidad)
             ->first();
 
@@ -132,6 +130,15 @@ class PlanController extends Controller
             return response()->json(['message' => 'Especialidad no encontrada'], 404);
         }
 
-        return response()->json($especialidad, 200);
+        return response()->json([
+            'especialidad' => $especialidad->only(['id_especialidad', 'nombre_especialidad']),
+            'programas' => $especialidad->programas->map(function ($programa) {
+                return [
+                    'id_programa' => $programa->id_programa,
+                    'nombre_programa' => $programa->nombre_programa,
+                    'plan' => $programa->plan->only(['id_plan', 'nombre_plan'])
+                ];
+            })
+        ], 200);
     }
 }

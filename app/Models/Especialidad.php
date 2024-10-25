@@ -16,9 +16,9 @@ class Especialidad extends Model
         'nombre_especialidad',
     ];
 
-    public function planes()
+    public function programas()
     {
-        return $this->hasMany(Planes::class, 'id_especialidad', 'id_especialidad');
+        return $this->hasMany(Programa::class, 'id_especialidad', 'id_especialidad');
     }
 
     public function grupos()

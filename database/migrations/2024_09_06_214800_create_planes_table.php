@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('planes', function (Blueprint $table) {
             $table->id('id_plan');
             $table->string('nombre_plan');
-            $table->unsignedBigInteger('id_especialidad');  // Definir el tipo manualmente
-            $table->foreign('id_especialidad')->references('id_especialidad')->on('especialidades')->onDelete('cascade');  // Definir manualmente la clave foránea
             $table->timestamps();
         });
     }

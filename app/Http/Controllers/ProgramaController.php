@@ -25,7 +25,9 @@ class ProgramaController extends Controller
         $validator = Validator::make($request->all(), [
             'nombre_programa' => 'required|string|max:255',
             'id_plan' => 'required|exists:planes,id_plan',
+            'id_especialidad' => 'required|exists:especialidades,id_especialidad', 
         ]);
+        
 
         if ($validator->fails()) {
             return response()->json([

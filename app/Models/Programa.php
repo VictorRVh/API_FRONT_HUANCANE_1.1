@@ -11,7 +11,13 @@ class Programa extends Model
 
     protected $table = 'programas';
     protected $primaryKey = 'id_programa';
-    protected $fillable = ['nombre_programa', 'id_plan'];
+    protected $fillable = ['nombre_programa', 'id_plan', 'id_especialidad'];
+
+
+    public function especialidad()
+    {
+        return $this->belongsTo(Especialidad::class, 'id_especialidad');
+    }
 
     public function plan()
     {

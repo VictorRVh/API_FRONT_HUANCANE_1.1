@@ -11,12 +11,7 @@ class Planes extends Model
 
     protected $table = 'planes';
     protected $primaryKey = 'id_plan';
-    protected $fillable = ['nombre_plan', 'id_especialidad'];
-
-    public function especialidad()
-    {
-        return $this->belongsTo(Especialidad::class, 'id_especialidad');
-    }
+    protected $fillable = ['nombre_plan'];
 
     public function programas()
     {
