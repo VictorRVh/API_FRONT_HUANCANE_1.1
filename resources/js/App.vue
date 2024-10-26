@@ -1,14 +1,14 @@
 <script setup>
-import LayoutRenderer from './src/layouts/LayoutRenderer.vue';
-import ConfirmModal from './src/components/page/ConfirmModal.vue';
+import LayoutRenderer from "./src/layouts/LayoutRenderer.vue";
+import ConfirmModal from "./src/components/page/ConfirmModal.vue";
 
-import useTheme from './src/composables/useTheme';
+import useTheme from "./src/composables/useTheme";
 useTheme();
 </script>
 
 <template>
-    <LayoutRenderer />
+  <LayoutRenderer />
 
-    <!-- confirm modal -->
-    <ConfirmModal />
+  <!-- confirm modal -->
+  <ConfirmModal />
 </template>

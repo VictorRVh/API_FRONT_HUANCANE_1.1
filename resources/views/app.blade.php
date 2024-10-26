@@ -17,7 +17,7 @@
         <strong>Please enable javascript otherwise this website will not work</strong>
     </noscript>
 
-    <div id="app"></div>
+    <div id="app" style="background: orange"></div>
 </body>
 
 </html>
