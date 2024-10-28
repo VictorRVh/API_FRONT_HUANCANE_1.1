@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Programa;
 use App\Models\UnidadDidactica;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -121,5 +122,26 @@ class UnidadDidacticaController extends Controller
             'message' => 'Unidad didáctica eliminada exitosamente',
             'status' => 204,
         ], 204);
+    }
+
+    public function getUnidadDidacticaPrograma($id_programa)
+    {
+        $programa = Programa::with('unidadesDidacticas')
+            ->where('id_programa', $id_programa)
+            ->first();
+
+        if (!$programa) {
+            return response()->json(['message' => 'Programa no encontrado'], 404);
+        }
+
+        return response()->json([
+            'programa' => $programa->only(['id_programa', 'nombre_programa']),
+            'unidades_didacticas' => $programa->unidadesDidacticas->map(function ($unidad) {
+                return [
+                    'id_unidad_didactica' => $unidad->id_unidad_didactica,
+                    'nombre_unidad' => $unidad->nombre_unidad
+                ];
+            })
+        ], 200);
     }
 }
