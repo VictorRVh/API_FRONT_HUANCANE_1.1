@@ -79,7 +79,7 @@ const SeeMore = (id) => {
   });
 };
 
-console.log("nuievos Unitses: ", UnitsStore.Units);
+console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
@@ -103,7 +103,10 @@ console.log("nuievos Unitses: ", UnitsStore.Units);
           </THead>
 
           <TBody>
-            <Tr v-for="Units in UnitsStore.Units" :key="Units.id_unidad_didactica">
+            <Tr
+              v-for="Units in UnitsStore.Units.unidades_didacticas"
+              :key="Units.id_unidad_didactica"
+            >
               <Td>{{ Units?.id_unidad_didactica }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
@@ -127,7 +130,7 @@ console.log("nuievos Unitses: ", UnitsStore.Units);
     <UnitsSlider
       :ProgramId="props.idPrograma"
       :show="slider"
-      :Units="sliderData"
+      :Unit="sliderData"
       @hide="hideSlider"
     />
   </AuthorizationFallback>
