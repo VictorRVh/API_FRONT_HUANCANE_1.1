@@ -11,7 +11,7 @@ class PlanController extends Controller
 {
     public function index()
     {
-        $planes = Planes::with('especialidad')->get(); // Incluye la relación con especialidad
+        $planes = Planes::all(); // Incluye la relación con especialidad
         return response()->json($planes, 200);
     }
 

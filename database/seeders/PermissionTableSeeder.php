@@ -50,6 +50,13 @@ class PermissionTableSeeder extends Seeder
             'plan-edit',
             'plan-delete',
 
+            // Permisos porgrama
+            'program-all',
+            'program-view',
+            'program-create',
+            'program-edit',
+            'program-delete',
+
         ];
 
         $permissions = array_map(function ($name) {

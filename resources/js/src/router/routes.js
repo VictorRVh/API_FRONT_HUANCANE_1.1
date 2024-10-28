@@ -48,15 +48,24 @@ export default [
             permissions: ['specialties-all', 'specialties-view'],
         },
     },
-
     {
-        path: '/especialidad/:idEspecialidad/planes',
+        path: '/especialidad/:idEspecialidad/:idPlan',
+        name: 'programaFormativo',
+        component: ()=>import('../pages/Especialidad/ProgramaFormativo.vue'),
+        props: true, // Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['program-all', 'program-view'],
+        }
+    },
+    {
+        path: '/especialidad/:idEspecialidad',
         name: 'PlanesFormativos',
         component: ()=>import('../pages/Especialidad/PlanFormativo.vue'),
         props: true, // Esto pasa los parámetros de ruta como props al componente
         meta: {
             layout: 'dashboard',
-           // permissions: ['plan-all', 'plan-view'],
+            permissions: ['plan-all', 'plan-view'],
         }
     },
 
@@ -69,6 +78,5 @@ export default [
             permissions: ['students-all', 'students-view'],
         },
     }
-
     /* todlos que se aumento */
 ];

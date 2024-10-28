@@ -1,5 +1,5 @@
 <script setup>
-// archivo planSlider.vue
+// archivo programSlider.vue
 import { computed, ref, watch } from "vue";
 import Slider from "../../ui/Slider.vue";
 import FormInput from "../../ui/FormInput.vue";
@@ -10,7 +10,7 @@ import AuthorizationFallback from "../../../components/page/AuthorizationFallbac
 
 import useUserStore from "../../../store/useUserStore";
 import useRoleStore from "../../../store/useRoleStore";
-import usePlanStore from "../../../store/Especialidad/usePlanFormativoStore";
+import useProgramStore from "../../../store/Especialidad/useProgramaStore";
 
 import useValidation from "../../../composables/useValidation";
 import useHttpRequest from "../../../composables/useHttpRequest";
@@ -24,9 +24,17 @@ const props = defineProps({
     type: Boolean,
     default: () => false,
   },
-  plan: {
+  program: {
     type: [Object, null],
     default: () => null,
+  },
+  planId: {
+    type: Number,
+    default: null,
+  },
+  specialtyId: {
+    type: Number,
+    default: null,
   },
 });
 
@@ -36,11 +44,11 @@ const emit = defineEmits(["hide"]);
 // Stores
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const planStore = usePlanStore();
+const programStore = useProgramStore();
 
 // Composables
-const { store: createPlan, saving, update: updatePlan, updating } = useHttpRequest(
-  "/plan"
+const { store: createProgram, saving, update: updateProgram, updating } = useHttpRequest(
+  "/programa"
 );
 const { runYupValidation } = useValidation();
 const { showToast } = useModalToast();
@@ -48,18 +56,21 @@ const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
 const requiredSpecialties = computed(() => {
-  if (!props.plan?.id_plan) return ["plan-all", "plan-create"];
-  else return ["plan-all", "plan-edit"];
+  if (!props.program?.id_programa) return ["program-all", "program-create"];
+  else return ["program-all", "program-edit"];
 });
 
 // Computed para el título
 const title = computed(() =>
-  props.plan ? `Update plan "${props.plan?.nombre_plan}"` : "Add new plan"
+  props.program ? `Update program "${props.program?.nombre_programa}"` : "Add new program"
 );
 
+console.log("Los id: ", props.planId, props.specialtyId);
 // Inicialización del formulario
 const initialFormData = () => ({
-  nombre_plan: null,
+  nombre_programa: null,
+  id_plan: props.planId,
+  id_especialidad: props.specialtyId,
 });
 
 // Variables reactivas para los datos del formulario y los errores
@@ -71,8 +82,8 @@ watch(
   () => props.show,
   (newValue) => {
     if (newValue) {
-      if (props.plan?.id_plan) {
-        formData.value = { nombre_plan: props.plan.nombre_plan };
+      if (props.program?.id_programa) {
+        formData.value = { nombre_programa: props.program.nombre_programa };
       } else {
         formData.value = initialFormData();
         formErrors.value = {};
@@ -86,7 +97,10 @@ watch(
 
 // Esquema de validación de Yup
 const schema = yup.object().shape({
-  nombre_plan: yup.string().nullable().required("El nombre de la plan es obligatorio"),
+  nombre_programa: yup
+    .string()
+    .nullable()
+    .required("El nombre de la program es obligatorio"),
 });
 
 // Función para manejar el envío del formulario
@@ -104,20 +118,22 @@ const onSubmit = async () => {
   }
   formErrors.value = {}; // Limpiar los errores
 
-  // Crear o actualizar la plan
-  const response = props.plan?.id_plan
-    ? await updatePlan(props.plan?.id_plan, data)
-    : await createPlan(data);
+  // Crear o actualizar la program
+  const response = props.program?.id_programa
+    ? await updateProgram(props.program?.id_programa, data)
+    : await createProgram(data);
 
   // Si la respuesta es exitosa
 
-  //console.log("response: ", response.plan);
+  //console.log("response: ", response.program);
 
-  if (response?.plan.id_plan) {
-    showToast(`plan ${props.plan?.id_plan ? "updated" : "created"} successfully`);
+  if (response?.program.id_programa) {
+    showToast(
+      `program ${props.program?.id_programa ? "updated" : "created"} successfully`
+    );
 
     // Cargar datos actualizados en las tiendas
-    planStore.loadPlans();
+    programStore.loadprograms();
     userStore.loadUsers();
     roleStore.loadRoles();
     isUserAuthenticated();
@@ -125,7 +141,7 @@ const onSubmit = async () => {
     // Cerrar el modal
     emit("hide");
   } else {
-    showToast("Error al guardar la plan. Inténtalo de nuevo.", "error");
+    showToast("Error al guardar la program. Inténtalo de nuevo.", "error");
   }
 };
 </script>
@@ -135,16 +151,16 @@ const onSubmit = async () => {
     <AuthorizationFallback :permissions="requiredSpecialties">
       <div class="mt-4 space-y-4">
         <FormInput
-          v-model="formData.nombre_plan"
+          v-model="formData.nombre_programa"
           :focus="show"
-          label="Nombre de la plan"
-          :error="formErrors?.nombre_plan"
+          label="Nombre del program"
+          :error="formErrors?.nombre_programa"
           required
         />
 
         <Button
-          :title="plan?.id_plan ? 'Save' : 'Create'"
-          :loading-title="plan?.id_plan ? 'Saving...' : 'Creating...'"
+          :title="program?.id_programa ? 'Save' : 'Create'"
+          :loading-title="program?.id_programa ? 'Saving...' : 'Creating...'"
           class="!w-full"
           :loading="saving || updating"
           key="submit-btn"

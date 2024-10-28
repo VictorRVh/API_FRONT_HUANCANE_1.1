@@ -13,9 +13,9 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import PlanSlider from "../../components/page/Especialidad/PlanFormativaSlider.vue";
+import ProgramSlider from "../../components/page/Especialidad/ProgramaSlider.vue";
 
-import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
+import useProgramStore from "../../store/Especialidad/useProgramaStore";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -31,6 +31,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  idPlan: {
+    typeof: Number,
+    default: null,
+  },
 });
 // Acceder al parámetro de la ruta
 
@@ -43,28 +47,28 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const planStore = usePlanStore();
+const ProgramStore = useProgramStore();
 
-// planStore.plans.plan
+// ProgramStore.Programs.Program
 
-if (!planStore.plans.length) await planStore.loadPlans();
+if (!ProgramStore.Programs.length) await ProgramStore.loadPrograms();
 
-const { slider, sliderData, showSlider, hideSlider } = useSlider("plan-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("program-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/plan");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/programa");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (plan) => {
+const onDelete = (Program) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(plan?.id_plan);
+    const isDeleted = await deleteSpecialy(Program?.id_programa);
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`plan "${plan?.nombre_plan}" deleted successfully...`);
-      planStore.loadPlans();
+      showToast(`Program "${Program?.nombre_programa}" deleted successfully...`);
+      ProgramStore.loadPrograms();
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -79,16 +83,16 @@ const SeeMore = (id) => {
   });
 };
 
-console.log("nuievos planes: ", planStore.plans);
+//console.log("nuievos Programes: ", ProgramStore.Programs);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['plan-all', 'plan-view']">
+  <AuthorizationFallback :permissions="['program-all', 'program-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">{{}} / Plan</h2>
+        <h2 class="text-active font-bold text-2xl">{{}} / Program</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -97,25 +101,25 @@ console.log("nuievos planes: ", planStore.plans);
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> plans </Th>
+              <Th> Programs </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
-            <Tr v-for="plan in planStore.plans" :key="plan.id_plan">
-              <Td>{{ plan?.id_plan }}</Td>
+            <Tr v-for="Program in ProgramStore.Programs" :key="Program.id_programa">
+              <Td>{{ Program?.id_programa }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ plan?.nombre_plan }}
+                  {{ Program?.nombre_programa }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(plan?.id_plan)" />
-                  <EditButton @click="showSlider(true, plan)" />
-                  <DeleteButton @click="onDelete(plan)" />
+                  <ViewButton @click="SeeMore(Program?.id_programa)" />
+                  <EditButton @click="showSlider(true, Program)" />
+                  <DeleteButton @click="onDelete(Program)" />
                 </div>
               </Td>
             </Tr>
@@ -124,6 +128,12 @@ console.log("nuievos planes: ", planStore.plans);
       </div>
     </div>
 
-    <PlanSlider :show="slider" :plan="sliderData" @hide="hideSlider" />
+    <ProgramSlider
+      :specialtyId="props.idEspecialidad"
+      :planId="props.idPlan"
+      :show="slider"
+      :Program="sliderData"
+      @hide="hideSlider"
+    />
   </AuthorizationFallback>
 </template>
