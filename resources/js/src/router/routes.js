@@ -68,7 +68,17 @@ export default [
             permissions: ['plan-all', 'plan-view'],
         }
     },
-
+    {
+        path: '/unidadDidactica/:idPrograma',
+        name: 'UnidadDidactica',
+        component: ()=>import('../pages/Especialidad/UnidadDidactica.vue'),
+        props: true, // Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['units-all', 'units-view'],
+        }
+    },
+   
     {
         path: '/estudiantes',
         name: 'estudiantes',

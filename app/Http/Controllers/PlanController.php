@@ -133,7 +133,6 @@ class PlanController extends Controller
         if (!$especialidad) {
             return response()->json(['message' => 'Especialidad no encontrada'], 404);
         }
-
         return response()->json([
             'especialidad' => $especialidad->only(['id_especialidad', 'nombre_especialidad']),
             'programas' => $especialidad->programas->map(function ($programa) {

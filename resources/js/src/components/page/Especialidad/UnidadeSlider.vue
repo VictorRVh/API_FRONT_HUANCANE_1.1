@@ -1,5 +1,5 @@
 <script setup>
-// archivo programSlider.vue
+// archivo unidad_didacticaSlider.vue
 import { computed, ref, watch } from "vue";
 import Slider from "../../ui/Slider.vue";
 import FormInput from "../../ui/FormInput.vue";
@@ -10,7 +10,7 @@ import AuthorizationFallback from "../../../components/page/AuthorizationFallbac
 
 import useUserStore from "../../../store/useUserStore";
 import useRoleStore from "../../../store/useRoleStore";
-import useProgramStore from "../../../store/Especialidad/useProgramaStore";
+import useUnitsStore from "../../../store/Especialidad/useUnidadesStore";
 
 import useValidation from "../../../composables/useValidation";
 import useHttpRequest from "../../../composables/useHttpRequest";
@@ -24,15 +24,11 @@ const props = defineProps({
     type: Boolean,
     default: () => false,
   },
-  program: {
+  Unit: {
     type: [Object, null],
     default: () => null,
   },
-  planId: {
-    type: Number,
-    default: null,
-  },
-  specialtyId: {
+  ProgramId: {
     type: Number,
     default: null,
   },
@@ -44,33 +40,31 @@ const emit = defineEmits(["hide"]);
 // Stores
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const programStore = useProgramStore();
+const UnitStore = useUnitsStore();
 
 // Composables
-const { store: createProgram, saving, update: updateProgram, updating } = useHttpRequest(
-  "/programa"
+const { store: createUnit, saving, update: updateUnit, updating } = useHttpRequest(
+  "/unidad_didactica"
 );
 const { runYupValidation } = useValidation();
 const { showToast } = useModalToast();
 const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
-const requiredSpecialties = computed(() => {
-  if (!props.program?.id_programa) return ["program-all", "program-create"];
-  else return ["program-all", "program-edit"];
+const requiredUnits = computed(() => {
+  if (!props.Unit?.id_unidad_didactica) return ["units-all", "units-create"];
+  else return ["units-all", "units-edit"];
 });
 
 // Computed para el título
 const title = computed(() =>
-  props.program ? `Update program "${props.program?.nombre_programa}"` : "Add new program"
+  props.Unit ? `Update Unit "${props.Unit?.nombre_unidad}"` : "Add new Unit"
 );
 
-console.log("Los id: ", props.planId, props.specialtyId);
 // Inicialización del formulario
 const initialFormData = () => ({
-  nombre_programa: null,
-  id_plan: props.planId,
-  id_especialidad: props.specialtyId,
+  nombre_unidad: null,
+  id_programa: props.ProgramId,
 });
 
 // Variables reactivas para los datos del formulario y los errores
@@ -82,8 +76,8 @@ watch(
   () => props.show,
   (newValue) => {
     if (newValue) {
-      if (props.program?.id_programa) {
-        formData.value = { nombre_programa: props.program.nombre_programa };
+      if (props.Unit?.id_unidad_didactica) {
+        formData.value = { nombre_unidad: props.Unit.nombre_unidad };
       } else {
         formData.value = initialFormData();
         formErrors.value = {};
@@ -97,10 +91,10 @@ watch(
 
 // Esquema de validación de Yup
 const schema = yup.object().shape({
-  nombre_programa: yup
+  nombre_unidad: yup
     .string()
     .nullable()
-    .required("El nombre de la program es obligatorio"),
+    .required("El nombre de la unidad_didactica es obligatorio"),
 });
 
 // Función para manejar el envío del formulario
@@ -118,22 +112,22 @@ const onSubmit = async () => {
   }
   formErrors.value = {}; // Limpiar los errores
 
-  // Crear o actualizar la program
-  const response = props.program?.id_programa
-    ? await updateProgram(props.program?.id_programa, data)
-    : await createProgram(data);
+  // Crear o actualizar la unidad_didactica
+  const response = props.Unit?.id_unidad_didactica
+    ? await updateUnit(props.Unit?.id_unidad_didactica, data)
+    : await createUnit(data);
 
   // Si la respuesta es exitosa
 
-  console.log("response fro: ", response.programa?.id_programa);
+  //console.log("response: ", response.unidad.id_unidad_didactica);
 
-  if (response.programa?.id_programa) {
+  if (response.unidad?.id_unidad_didactica) {
     showToast(
-      `program ${props.program?.id_programa ? "updated" : "created"} successfully`
+      `Unit ${props.Unit?.id_unidad_didactica ? "updated" : "created"} successfully`
     );
 
     // Cargar datos actualizados en las tiendas
-    programStore.loadPrograms(props.specialtyId, props.planId);
+    UnitStore.loadUnits(props.ProgramId);
     userStore.loadUsers();
     roleStore.loadRoles();
     isUserAuthenticated();
@@ -141,26 +135,26 @@ const onSubmit = async () => {
     // Cerrar el modal
     emit("hide");
   } else {
-    showToast("Error al guardar la program. Inténtalo de nuevo.", "error");
+    showToast("Error al guardar la unidad_didactica. Inténtalo de nuevo.", "error");
   }
 };
 </script>
 
 <template>
   <Slider :show="show" :title="title" @hide="emit('hide')">
-    <AuthorizationFallback :permissions="requiredSpecialties">
+    <AuthorizationFallback :permissions="requiredUnits">
       <div class="mt-4 space-y-4">
         <FormInput
-          v-model="formData.nombre_programa"
+          v-model="formData.nombre_unidad"
           :focus="show"
-          label="Nombre del program"
-          :error="formErrors?.nombre_programa"
+          label="Nombre de la unidad_didactica"
+          :error="formErrors?.nombre_unidad"
           required
         />
 
         <Button
-          :title="program?.id_programa ? 'Save' : 'Create'"
-          :loading-title="program?.id_programa ? 'Saving...' : 'Creating...'"
+          :title="Unit?.id_unidad_didactica ? 'Save' : 'Create'"
+          :loading-title="Unit?.id_unidad_didactica ? 'Saving...' : 'Creating...'"
           class="!w-full"
           :loading="saving || updating"
           key="submit-btn"

@@ -13,9 +13,9 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import ProgramSlider from "../../components/page/Especialidad/ProgramaSlider.vue";
+import UnitsSlider from "../../components/page/Especialidad/UnidadeSlider.vue";
 
-import useProgramStore from "../../store/Especialidad/useProgramaStore";
+import useUnitsStore from "../../store/Especialidad/useUnidadesStore";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -27,19 +27,15 @@ import useAuth from "../../composables/useAuth";
 
 // Obtener el objeto de la ruta actual
 const props = defineProps({
-  idEspecialidad: {
+  idPrograma: {
     type: Number,
-    default: null,
-  },
-  idPlan: {
-    typeof: Number,
     default: null,
   },
 });
 // Acceder al parámetro de la ruta
 
-// Ahora puedes usar `idEspecialidad` en tu componente
-//console.log("ruta s", props.idEspecialidad);
+// Ahora puedes usar `idPrograma` en tu componente
+console.log("ruta s", props.idPrograma);
 
 // Cargar la especialidad correspondiente cuando se monta el componente
 
@@ -47,29 +43,28 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const ProgramStore = useProgramStore();
+const UnitsStore = useUnitsStore();
 
-// ProgramStore.Programs.Program
+// UnitsStore.Units.Units
 
-if (!ProgramStore.Programs.length)
-  await ProgramStore.loadPrograms(props.idEspecialidad, props.idPlan);
+if (!UnitsStore.Units.length) await UnitsStore.loadUnits(props.idPrograma);
 
-const { slider, sliderData, showSlider, hideSlider } = useSlider("program-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("Units-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/programa");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/unidad_didactica");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (Program) => {
+const onDelete = (Units) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(Program?.id_programa);
+    const isDeleted = await deleteSpecialy(Units?.id_unidad_didactica);
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Program "${Program?.nombre_programa}" deleted successfully...`);
-      ProgramStore.loadPrograms(props.idEspecialidad, props.idPlan);
+      showToast(`Units "${Units?.nombre_unidad}" deleted successfully...`);
+      UnitsStore.loadUnits(props.idPrograma);
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -79,21 +74,21 @@ const onDelete = (Program) => {
 
 const SeeMore = (id) => {
   router.push({
-    name: "UnidadDidactica",
-    params: { idPrograma: id },
+    name: "programaFormativo",
+    params: { idUnits: id },
   });
 };
 
-console.log("nuievos Programes: ", ProgramStore.Programs.programas);
+console.log("nuievos Unitses: ", UnitsStore.Units);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['program-all', 'program-view']">
+  <AuthorizationFallback :permissions="['units-all', 'units-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">{{}} / Program</h2>
+        <h2 class="text-active font-bold text-2xl">{{}} / Units</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -102,28 +97,25 @@ console.log("nuievos Programes: ", ProgramStore.Programs.programas);
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> Programs </Th>
+              <Th> Unitss </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
-            <Tr
-              v-for="Program in ProgramStore.Programs.programas"
-              :key="Program.id_programa"
-            >
-              <Td>{{ Program?.id_programa }}</Td>
+            <Tr v-for="Units in UnitsStore.Units" :key="Units.id_unidad_didactica">
+              <Td>{{ Units?.id_unidad_didactica }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ Program?.nombre_programa }}
+                  {{ Units?.nombre_unidad }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(Program?.id_programa)" />
-                  <EditButton @click="showSlider(true, Program)" />
-                  <DeleteButton @click="onDelete(Program)" />
+                  <ViewButton @click="SeeMore(Units?.id_unidad_didactica)" />
+                  <EditButton @click="showSlider(true, Units)" />
+                  <DeleteButton @click="onDelete(Units)" />
                 </div>
               </Td>
             </Tr>
@@ -132,11 +124,10 @@ console.log("nuievos Programes: ", ProgramStore.Programs.programas);
       </div>
     </div>
 
-    <ProgramSlider
-      :specialtyId="props.idEspecialidad"
-      :planId="props.idPlan"
+    <UnitsSlider
+      :ProgramId="props.idPrograma"
       :show="slider"
-      :program="sliderData"
+      :Units="sliderData"
       @hide="hideSlider"
     />
   </AuthorizationFallback>
