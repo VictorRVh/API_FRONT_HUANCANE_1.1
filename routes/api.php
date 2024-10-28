@@ -186,7 +186,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:plan-all|plan-view');
 
-    Route::get('planEspecialidad/{id_especialidad}/programas/{id_plan}', [
+    Route::get('planEspecialidad/{id}', [
         \App\Http\Controllers\PlanController::class,
         'getEspecialidadPrograma',
     ])->middleware('permission:plan-all|plan-delete');
@@ -206,8 +206,6 @@ Route::middleware('auth:sanctum')->group(function () {
         'destroy',
     ])->middleware('permission:plan-all|plan-delete');
 
-   
-
 
     // RUTA PARA PROGRAMAS
 
@@ -216,7 +214,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:program-all|program-view');
 
-    Route::get('planPrograma/{idEspecialidad}/{idPlan}', [
+    Route::get('planPrograma/{id}', [
         \App\Http\Controllers\ProgramaController::class,
         'getPlanPrograma',
     ])->middleware('permission:program-all|plan-delete');
