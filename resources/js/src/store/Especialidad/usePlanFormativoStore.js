@@ -6,10 +6,10 @@ import useHttpRequest from '../../composables/useHttpRequest';
 const usePlansStore = defineStore('plans', () => {
     const {
         index: getPlans,
-        show:getPlansByIdEspeciality,
+       // show:getPlansByIdEspeciality,
         loading: plansLoading,
         initialLoading: plansFirstTimeLoading,
-    } = useHttpRequest('/planEspecialidad');
+    } = useHttpRequest('/plan');
 
     const plan = ref(null);
     const plans = ref([]);
@@ -23,10 +23,11 @@ const usePlansStore = defineStore('plans', () => {
         plans.value = response;
     };
     // Nueva función para cargar una especialidad por su ID
-    const loadPlanByIdEsp = async (id) => {
+    /* const loadPlanByIdEsp = async (id) => {
         const response = await getPlansByIdEspeciality(id); // Usamos el método show
         plans.value = response;
     };
+    */
 
     return {
         plan,
@@ -34,8 +35,8 @@ const usePlansStore = defineStore('plans', () => {
         plans,
         plansLoading,
         plansFirstTimeLoading,
-        //loadPlans,
-        loadPlanByIdEsp,
+        loadPlans,
+       // loadPlanByIdEsp,
     };
 });
 
