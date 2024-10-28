@@ -216,7 +216,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:program-all|program-view');
 
-    Route::get('planPrograma/{id}', [
+    Route::get('planPrograma/{idEspecialidad}/{idPlan}', [
         \App\Http\Controllers\ProgramaController::class,
         'getPlanPrograma',
     ])->middleware('permission:program-all|plan-delete');
