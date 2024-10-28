@@ -120,10 +120,14 @@ class PlanController extends Controller
         ], 204);
     }
 
-    public function getEspecialidadPrograma($id_especialidad)
+    public function getEspecialidadPrograma($id_especialidad, $id_plan)
     {
-        $especialidad = Especialidad::with(['programas.plan'])
-            ->where('id_especialidad', $id_especialidad)
+        $especialidad = Especialidad::with(['programas' => function ($query) use ($id_plan) {
+            if ($id_plan) {
+                $query->where('id_plan', $id_plan);
+            }
+            $query->with('plan');
+        }])->where('id_especialidad', $id_especialidad)
             ->first();
 
         if (!$especialidad) {
@@ -136,7 +140,7 @@ class PlanController extends Controller
                 return [
                     'id_programa' => $programa->id_programa,
                     'nombre_programa' => $programa->nombre_programa,
-                    'plan' => $programa->plan->only(['id_plan', 'nombre_plan'])
+                    'plan' => $programa->plan ? $programa->plan->only(['id_plan', 'nombre_plan']) : null,
                 ];
             })
         ], 200);

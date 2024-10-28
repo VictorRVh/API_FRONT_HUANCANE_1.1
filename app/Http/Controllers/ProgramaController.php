@@ -126,21 +126,4 @@ class ProgramaController extends Controller
         ], 204);
     }
 
-
-    public function getPlanPrograma($id_plan)
-    {
-        $plan = Planes::with(['especialidad', 'programas'])
-            ->where('id_plan', $id_plan)
-            ->first();
-
-        if (!$plan) {
-            return response()->json(['message' => 'Plan no encontrado'], 404);
-        }
-
-        return response()->json([
-            'especialidad' => $plan->especialidad,
-            'plan' => $plan->only(['id_plan', 'nombre_plan', 'created_at', 'updated_at']), // Excluir la relación especialidad
-            'programas' => $plan->programas
-        ], 200);
-    }
 }
