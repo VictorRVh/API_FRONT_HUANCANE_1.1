@@ -242,6 +242,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:permissions-all|permissions-view');
 
+    Route::get('unidad_didactica/{id_programa}', [
+        \App\Http\Controllers\UnidadDidacticaController::class,
+        'getUnidadDidacticaPrograma',
+    ])->middleware('permission:permissions-all|permissions-view');
+
     Route::post('unidad_didactica', [
         \App\Http\Controllers\UnidadDidacticaController::class,
         'store',
