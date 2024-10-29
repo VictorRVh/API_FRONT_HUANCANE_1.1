@@ -13,9 +13,9 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import UnitsSlider from "../../components/page/Especialidad/UnidadeSlider.vue";
+import IndicatorSlider from "../../components/page/Especialidad/IndicadorLogroSlider.vue";
 
-import useUnitsStore from "../../store/Especialidad/useUnidadesStore";
+import useIndicatorStore from "../../store/Especialidad/useIndicaroLogroStore";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -27,15 +27,15 @@ import useAuth from "../../composables/useAuth";
 
 // Obtener el objeto de la ruta actual
 const props = defineProps({
-  idPrograma: {
+  idUnidad: {
     type: Number,
     default: null,
   },
 });
 // Acceder al parámetro de la ruta
 
-// Ahora puedes usar `idPrograma` en tu componente
-console.log("ruta s", props.idPrograma);
+// Ahora puedes usar `idUnidad` en tu componente
+console.log("ruta  Unidad", props.idUnidad);
 
 // Cargar la especialidad correspondiente cuando se monta el componente
 
@@ -43,28 +43,29 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const UnitsStore = useUnitsStore();
+const IndicatorStore = useIndicatorStore();
 
-// UnitsStore.Units.Units
+// IndicatorStore.Indicators.Indicator
 
-if (!UnitsStore.Units.length) await UnitsStore.loadUnits(props.idPrograma);
+if (!IndicatorStore.Indicators.length)
+  await IndicatorStore.loadIndicators(props.idUnidad);
 
-const { slider, sliderData, showSlider, hideSlider } = useSlider("Units-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("indicators-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/unidad_didactica");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/indicador_logro");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (Units) => {
+const onDelete = (Indicator) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(Units?.id_unidad_didactica);
-    console.log("pasod eleinar  cosmlas: ", isDeleted);
+    const isDeleted = await deleteSpecialy(Indicator?.id_indicador);
+    //console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Units "${Units?.nombre_unidad}" deleted successfully...`);
-      UnitsStore.loadUnits(props.idPrograma);
+      showToast(`Indicator "${Indicator?.descripcion}" deleted successfully...`);
+      IndicatorStore.loadIndicators(props.idUnidad);
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -74,21 +75,23 @@ const onDelete = (Units) => {
 
 const SeeMore = (id) => {
   router.push({
-    name: "IndicadorLogro",
-    params: { idUnidad: id },
+    name: "programaFormativo",
+    params: { idIndicator: id },
   });
 };
 
-console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
-
+console.log(
+  "nuevos Indicatores: ",
+  IndicatorStore.Indicators.unidad_didactica?.indicadores_logro
+);
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['units-all', 'units-view']">
+  <AuthorizationFallback :permissions="['indicators-all', 'indicators-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">{{}} / Units</h2>
+        <h2 class="text-active font-bold text-2xl">{{}} / Indicator</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -97,28 +100,29 @@ console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> Unitss </Th>
+              <Th> Indicators </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
             <Tr
-              v-for="Units in UnitsStore.Units.unidades_didacticas"
-              :key="Units.id_unidad_didactica"
+              v-for="Indicator in IndicatorStore.Indicators.unidad_didactica
+                ?.indicadores_logro"
+              :key="Indicator.id_indicador"
             >
-              <Td>{{ Units?.id_unidad_didactica }}</Td>
+              <Td>{{ Indicator?.id_indicador }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ Units?.nombre_unidad }}
+                  {{ Indicator?.descripcion }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(Units?.id_unidad_didactica)" />
-                  <EditButton @click="showSlider(true, Units)" />
-                  <DeleteButton @click="onDelete(Units)" />
+                  <ViewButton @click="SeeMore(Indicator?.id_indicador)" />
+                  <EditButton @click="showSlider(true, Indicator)" />
+                  <DeleteButton @click="onDelete(Indicator)" />
                 </div>
               </Td>
             </Tr>
@@ -127,10 +131,10 @@ console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
       </div>
     </div>
 
-    <UnitsSlider
-      :ProgramId="props.idPrograma"
+    <IndicatorSlider
+      :UnidadId="props.idUnidad"
       :show="slider"
-      :Unit="sliderData"
+      :Indicator="sliderData"
       @hide="hideSlider"
     />
   </AuthorizationFallback>
