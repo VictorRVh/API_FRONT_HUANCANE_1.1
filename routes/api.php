@@ -270,6 +270,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:permissions-all|permissions-view');
 
+    Route::get('indicador_logro/{id_unidad_didactica}', [
+        \App\Http\Controllers\IndicadorLogroController::class,
+        'getIndicadoresPorUnidadDidactica',
+    ])->middleware('permission:permissions-all|permissions-view');
+
     Route::post('indicador_logro', [
         \App\Http\Controllers\IndicadorLogroController::class,
         'store',
