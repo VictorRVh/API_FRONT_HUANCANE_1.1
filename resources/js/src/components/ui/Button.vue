@@ -34,7 +34,7 @@ const props = defineProps({
 <template>
     <button
         type="button"
-        class="w-full flex justify-center px-4 py-2 bg-[#921733] text-white font-medium rounded-md  hover:bg-transparent hover:text-[#921733] hover:border-[#921733] hover:border"
+        class="w-full flex justify-center px-4 py-2 bg-[#921733] text-white font-medium rounded-md border-2 border-transparent transition-all duration-300 hover:bg-transparent hover:text-[#921733] hover:border-[#921733]"
         :class="[disabled ? disabledClass : '']"
         :disabled="disabled"
     >

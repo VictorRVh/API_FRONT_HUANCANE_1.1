@@ -15,7 +15,7 @@ export default {
         mobile: '420px',
       },
       fontFamily: {
-        inter: ['Inter', 'sans-serif'], // Cambié a "Inter" para un estilo más profesional
+        inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
         xsm: '13px',
@@ -23,13 +23,20 @@ export default {
         xxs: '10px',
       },
       colors: {
+        // Paleta de colores para modo claro
         granate: '#921733',
         plomoClaro: '#F8F8FA',
         blancoPuro: '#FFFFFF',
-        azulado: '#F8F8FA', // Corregí el valor con espacio extra
+        azulado: '#F8F8FA',
         negroClaro: '#49454F',
-        active: { // Agregado para evitar el error en el archivo CSS
-          DEFAULT: '#921733', // Usando el color 'granate' para active por defecto
+        active: '#921733',
+        // Colores para modo oscuro
+        dark: {
+          fondo: '#121212',       // Fondo oscuro general
+          surface: '#1E1E1E',     // Fondo para tarjetas y componentes
+          text: '#E0E0E0',        // Color de texto
+          primary: '#BB86FC',     // Color primario accesible en fondo oscuro
+          secondary: '#03DAC6',   // Color secundario en modo oscuro
         },
       },
       transitionProperty: {
@@ -37,10 +44,7 @@ export default {
         height: 'height',
         'max-height': 'max-height',
       },
-      boxShadow: {
-        google: '0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12), 0px 5px 5px -3px rgba(0, 0, 0, 0.2)',
-        'google-sm': '0px 2px 2px 1px rgba(0, 0, 0, 0.14), 0px 2px 2px 2px rgba(0, 0, 0 , 0.12), 0px 2px 2px 0px rgba(0, 0, 0, 0.2)',
-      },
+
       borderRadius: {
         sm: '4px',
       },
