@@ -13,9 +13,9 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import ProgramSlider from "../../components/page/Especialidad/ProgramaSlider.vue";
+import ExperienciaSlider from "../../components/page/Especialidad/ExperienciaSlider.vue";
 
-import useProgramStore from "../../store/Especialidad/useProgramaStore";
+import useExperienciasStore from "../../store/Especialidad/useExperienciaFormativa";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -27,19 +27,15 @@ import useAuth from "../../composables/useAuth";
 
 // Obtener el objeto de la ruta actual
 const props = defineProps({
-  idEspecialidad: {
+  idPrograma: {
     type: Number,
-    default: null,
-  },
-  idPlan: {
-    typeof: Number,
     default: null,
   },
 });
 // Acceder al parámetro de la ruta
 
-// Ahora puedes usar `idEspecialidad` en tu componente
-//console.log("ruta s", props.idEspecialidad);
+// Ahora puedes usar `idPrograma` en tu componente
+console.log("ruta s", props.idPrograma);
 
 // Cargar la especialidad correspondiente cuando se monta el componente
 
@@ -47,29 +43,27 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const ProgramStore = useProgramStore();
+const experienciasStore = useExperienciasStore();
 
-// ProgramStore.Programs.Program
 
-if (!ProgramStore.Programs.length)
-  await ProgramStore.loadPrograms(props.idEspecialidad, props.idPlan);
+if (!experienciasStore.experiencias.length) await experienciasStore.loadExperiencias(props.idPrograma);
 
-const { slider, sliderData, showSlider, hideSlider } = useSlider("program-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("experiencias-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/programa");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/experiencia_formativa");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (Program) => {
+const onDelete = (experiencias) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(Program?.id_programa);
+    const isDeleted = await deleteSpecialy(experiencias?.id_experiencia_formativa);
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Program "${Program?.nombre_programa}" deleted successfully...`);
-      ProgramStore.loadPrograms(props.idEspecialidad, props.idPlan);
+      showToast(`Experiencias "${experiencias?.nombre_unidad}" deleted successfully...`);
+      experienciasStore.loadExperiencias(props.idPrograma);
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -77,30 +71,16 @@ const onDelete = (Program) => {
   });
 };
 
-const SeeMore = (id) => {
-  router.push({
-    name: "UnidadDidactica",
-    params: { idPrograma: id },
-  });
-};
-
-const SeeMoreExperiencia = (id) => {
-  router.push({
-    name: "ExperienciaFormativa",
-    params: { idPrograma: id },
-  });
-};
-
-console.log("nuievos Programes: ", ProgramStore.Programs.programas);
+console.log("nuievos Unitses: ", experienciasStore.experiencias);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['program-all', 'program-view']">
+  <AuthorizationFallback :permissions="['units-all', 'units-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">{{}} / Program</h2>
+        <h2 class="text-active font-bold text-2xl">{{}} / Experiencias</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -109,29 +89,27 @@ console.log("nuievos Programes: ", ProgramStore.Programs.programas);
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> Programs </Th>
+              <Th> Experiencia </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
             <Tr
-              v-for="Program in ProgramStore.Programs.programas"
-              :key="Program.id_programa"
+              v-for="experiencias in experienciasStore.experiencias.experiencias_formativas"
+              :key="experiencias.id_experiencia_formativa"
             >
-              <Td>{{ Program?.id_programa }}</Td>
+              <Td>{{ experiencias?.id_experiencia_formativa }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ Program?.nombre_programa }}
+                  {{ experiencias?.nombre_experiencia }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(Program?.id_programa)" />
-                  <ViewButton @click="SeeMoreExperiencia(Program?.id_programa)" />
-                  <EditButton @click="showSlider(true, Program)" />
-                  <DeleteButton @click="onDelete(Program)" />
+                  <EditButton @click="showSlider(true, experiencias)" />
+                  <DeleteButton @click="onDelete(experiencias)" />
                 </div>
               </Td>
             </Tr>
@@ -140,11 +118,10 @@ console.log("nuievos Programes: ", ProgramStore.Programs.programas);
       </div>
     </div>
 
-    <ProgramSlider
-      :specialtyId="props.idEspecialidad"
-      :planId="props.idPlan"
+    <ExperienciaSlider
+      :ProgramId="props.idPrograma"
       :show="slider"
-      :program="sliderData"
+      :experiencia="sliderData"
       @hide="hideSlider"
     />
   </AuthorizationFallback>

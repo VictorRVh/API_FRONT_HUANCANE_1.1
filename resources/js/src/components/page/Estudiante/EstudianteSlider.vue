@@ -31,7 +31,7 @@ const props = defineProps({
 const emit = defineEmits(["hide"]);
 
 const userStore = useStudentsStore();
-const roleStore = useRoleStore();
+//const roleStore = useRoleStore();
 const { store: createUser, saving, update: updateUser, updating } = useHttpRequest(
   "/users"
 );
@@ -53,14 +53,14 @@ const initialFormData = () => {
     name: null,
     apellido_paterno: null,
     apellido_materno: null,
-    dni: null, 
+    dni: null,
     sexo: null,
     celular: null,
     fecha_nacimiento: null,
     email: null,
     password: null,
     confirm_password: null,
-    roles: [],
+    roles: [8],
   };
 };
 
@@ -83,35 +83,6 @@ watch(
     }
   }
 );
-
-const roleOptions = computed(() => {
-  const formDataRoleIds = formData.value.roles.map((role) => role?.id?.toString());
-  console.log(formDataRoleIds)
-  return roleStore.roles.filter(
-    (role) =>
-      !formDataRoleIds.includes(role?.id?.toString()) && role?.name !== "super-admin"
-  );
-});
-
-
-const selectedRole = ref(null);
-const onRoleSelect = (role) => {
-  formData.value = {
-    ...formData.value,
-    roles: [role].concat(formData.value.roles),
-  };
-  selectedRole.value = null;
-};
-const onRoleRemove = (role) => {
-  const updatedRoles = formData.value.roles.filter(
-    (fRole) => fRole?.id?.toString() !== role?.id?.toString()
-  );
-
-  formData.value = {
-    ...formData.value,
-    roles: updatedRoles,
-  };
-};
 
 const schema = yup.object().shape({
   name: yup.string().nullable().required(),
@@ -136,21 +107,14 @@ const schema = yup.object().shape({
     }),
 });
 
-
 const onSubmit = async () => {
-
-  console.log('jaaaaaaaa')
+  console.log("jaaaaaaaa");
 
   if (saving.value || updating.value) return;
 
   let data = {
     ...formData.value,
-    roles: formData.value.roles
-      ?.map((role) => role?.id)
-      ?.sort((a, b) => Number(a) - Number(b)),
   };
-
-  console.log(data)
 
   const { validated, errors } = await runYupValidation(schema, data);
   if (!validated) {
@@ -259,53 +223,10 @@ const onSubmit = async () => {
             label="Confirm password"
             required
           />
-          
         </template>
 
-        <FormLabelError label="Add role">
-          <VSelect
-            v-model="selectedRole"
-            :options="roleOptions"
-            label="name"
-            @update:model-value="(role) => onRoleSelect(role)"
-          />
-        </FormLabelError>
-
         <div class="w-full space-y-3">
-          <FormLabelError v-if="formData.roles?.length" label="User roles" />
-
           <TransitionGroup tag="ul" name="edit-list" class="relative space-y-3">
-            <li
-              v-for="role in formData.roles"
-              :key="role.id"
-              class="shadow-google rounded-sm"
-            >
-              <div
-                class="p-4 flex-between w-full dark:bg-gray-800/60 rounded-sm border border-[#e6e6e6] dark:border-gray-700"
-              >
-                <div class="flex-1">{{ role.name }}</div>
-                <span
-                  class="text-sm cursor-pointer text-red-500 dark:text-red-300"
-                  @click="onRoleRemove(role)"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="css-i6dzq1"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </span>
-              </div>
-            </li>
-
             <Button
               :title="user?.id ? 'Update' : 'Save'"
               key="submit-btn"
