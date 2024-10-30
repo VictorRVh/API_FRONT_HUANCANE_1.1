@@ -71,7 +71,7 @@ const onDelete = (user) => {
                             <Td>{{ user?.id }}</Td>
                             <Td>
                                 <div
-                                    class="text-emerald-500 dark:text-emerald-200"
+                                     class="text-granate dark:text-white"
                                 >
                                     {{ user?.name }}
                                 </div>

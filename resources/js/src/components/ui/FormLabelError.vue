@@ -29,11 +29,11 @@ const id = ref(`input-${v4()}`);
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full dark:text-white">
     <label
       v-if="label"
       :for="id"
-      class="block mb-2 text-sm font-semibold"
+      class="block mb-2 text-sm font-semibold "
       :class="[labelClass ? labelClass : '']"
     >
       {{ label }}

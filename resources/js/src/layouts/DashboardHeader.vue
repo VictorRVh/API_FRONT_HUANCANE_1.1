@@ -6,7 +6,7 @@ import useRoleStore from "../store/useRoleStore";
 import usePermissionStore from "../store/usePermissionStore";
 import useAppRouter from "../composables/useAppRouter";
 
-// Injecting theme and other global properties
+// Inyecta el tema y otras propiedades globales
 const { isDarkMode, updateDarkMode, windowWidth } = inject("theme");
 const { index: logout } = useHttpRequest("/logout");
 const { pushToRoute } = useAppRouter();
@@ -16,12 +16,10 @@ const userStore = useUserStore();
 const roleStore = useRoleStore();
 const permissionStore = usePermissionStore();
 
-// Get user permissions
-const userPermissions = computed(
-  () => userStore.user?.permissions.map((p) => p.name) || []
-);
+// Obtener permisos del usuario
+const userPermissions = computed(() => userStore.user?.permissions.map(p => p.name) || []);
 
-// Logout function
+// Función de logout
 const onLogout = async () => {
   const isLoggedOut = await logout();
   if (isLoggedOut) {
@@ -32,163 +30,88 @@ const onLogout = async () => {
   }
 };
 
-// Function to create menu items dynamically
+// Crear elementos de menú dinámicamente
 const menuItems = [
-  {
-    name: "Home",
-    icon: "HomeIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Docente",
-    icon: "UserIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Estudiante",
-    icon: "AcademicCapIcon",
-    route: "estudiantes",
-    permissions: ["students-all", "students-view"],
-  },
-  {
-    name: "Matrícula",
-    icon: "BookOpenIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Especialidad",
-    icon: "BuildingOfficeIcon",
-    route: "especialidad",
-    permissions: ["specialties-all", "specialties-view"],
-  },
-  {
-    name: "Reportes",
-    icon: "ChartBarIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Certificados",
-    icon: "FolderIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Users",
-    icon: "UsersIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
-  },
-  {
-    name: "Roles",
-    icon: "BookmarkIcon",
-    route: "roles",
-    permissions: ["roles-all", "roles-view"],
-  },
-  {
-    name: "Permissions",
-    icon: "BookmarkSquareIcon",
-    route: "permissions",
-    permissions: ["permissions-all", "permissions-view"],
-  },
+  { name: "Home", icon: "HomeIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Docente", icon: "UserIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Estudiante", icon: "AcademicCapIcon", route: "estudiantes", permissions: ["students-all", "students-view"] },
+  { name: "Matrícula", icon: "BookOpenIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Especialidad", icon: "BuildingOfficeIcon", route: "especialidad", permissions: ["specialties-all", "specialties-view"] },
+  { name: "Reportes", icon: "ChartBarIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Certificados", icon: "FolderIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Users", icon: "UsersIcon", route: "users", permissions: ["users-all", "users-view"] },
+  { name: "Roles", icon: "BookmarkIcon", route: "roles", permissions: ["roles-all", "roles-view"] },
+  { name: "Permissions", icon: "BookmarkSquareIcon", route: "permissions", permissions: ["permissions-all", "permissions-view"] },
 ];
 
-// Helper function to check if user has permission for the route
-const hasPermission = (itemPermissions) =>
-  itemPermissions.some((perm) => userPermissions.value.includes(perm));
+// Comprobar permisos
+const hasPermission = itemPermissions => itemPermissions.some(perm => userPermissions.value.includes(perm));
 </script>
 
 <template>
-    <!-- Contenedor Principal del Dashboard con margen superior, bordes redondeados y sin sombra -->
-    <div class="flex flex-col h-5/5 bg-blancoPuro dark:bg-dark-fondo text-granate dark:text-dark-text font-inter ml-5  w-11/12 max-w-3xl ">
+  <div class="flex flex-col h-5/5 bg-blancoPuro dark:bg-gray-800 text-granate dark:text-gray-400 font-inter ml-5 w-11/12 max-w-3xl">
+    <h2 class="text-lg font-semibold text-negroClaro dark:text-gray-400 mt-4 mb-2 ml-4">HERRAMIENTAS</h2>
 
-      <!-- Título "HERRAMIENTAS" posicionado a la izquierda y en la parte superior -->
-      <h2 class="text-lg font-semibold text-negroClaro dark:text-dark-primary mt-4 mb-2 ml-4">HERRAMIENTAS</h2>
-
-      <!-- Contenido del menú en la parte superior y alineado a la izquierda -->
-      <div class="flex flex-col items-start w-full mt-2 space-y-2">
-        <RouterLink
-          v-for="item in menuItems"
-          :key="item.name"
-          v-show="hasPermission(item.permissions)"
-          :to="{ name: item.route }"
-          class="w-full flex items-center pl-6 py-2 rounded-md hover:bg-granate dark:hover:bg-dark-primary transition-all duration-200"
-        >
-          <template v-slot="{ isActive }">
-            <span
-              class="lg:text-xs font-normal flex items-center justify-start w-full h-full"
-              :class="[
-                isActive ? 'text-active dark:text-dark-primary' : 'text-granate dark:text-dark-text',
-                'hover:text-blancoPuro dark:hover:text-dark-surface',
-              ]"
-            >
-              <component :is="item.icon" class="w-5 h-5 mb-2 mr-2" />
-              <p>{{ item.name }}</p>
-            </span>
-          </template>
-        </RouterLink>
-      </div>
-
-      <!-- Logout y modo oscuro al final, utilizando los colores de modo oscuro -->
-      <div class="flex flex-col items-start mb-4 space-y-2 mt-auto ml-4">
-        <!-- Logout -->
-        <span
-          class="cursor-pointer text-dark-surface dark:text-dark-secondary hover:text-blancoPuro hover:bg-granate dark:hover:bg-dark-primary rounded-md px-4 py-1 transition-colors font-normal"
-          @click="onLogout"
-        >
-          Logout
-        </span>
-
-        <!-- Modo oscuro toggle, debajo de Logout -->
-        <span
-          v-if="isDarkMode"
-          class="cursor-pointer text-dark-surface dark:text-dark-secondary hover:text-blancoPuro hover:bg-granate dark:hover:bg-dark-primary rounded-md px-3 py-2 transition-colors"
-          @click="updateDarkMode(false)"
-        >
-          <!-- Icono de Sol para Modo Claro -->
-          <svg
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+    <!-- Menú de elementos -->
+    <div class="flex flex-col items-start w-full mt-2 space-y-2">
+      <RouterLink
+        v-for="item in menuItems"
+        :key="item.name"
+        v-show="hasPermission(item.permissions)"
+        :to="{ name: item.route }"
+        class="w-full flex items-center pl-6 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200"
+      >
+        <template v-slot="{ isActive }">
+          <span
+            class="lg:text-xs font-normal flex items-center justify-start w-full h-full"
+            :class="[isActive ? 'text-blue-600 dark:text-blue-500' : 'text-granate dark:text-gray-400']"
           >
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        </span>
-        <span
-          v-else
-          class="cursor-pointer text-dark-surface dark:text-dark-secondary hover:text-blancoPuro hover:bg-granate dark:hover:bg-dark-primary rounded-md px-3 py-2 transition-colors"
-          @click="updateDarkMode(true)"
-        >
-          <!-- Icono de Luna para Modo Oscuro -->
-          <svg
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 A7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </span>
-      </div>
+            <component :is="item.icon" class="w-5 h-5 mb-2 mr-2" />
+            <p>{{ item.name }}</p>
+          </span>
+        </template>
+      </RouterLink>
     </div>
-  </template>
+
+    <!-- Logout y Modo Oscuro -->
+    <div class="flex flex-col items-start mb-4 space-y-2 mt-auto ml-4">
+      <!-- Logout -->
+      <span
+        class="cursor-pointer text-negroClaro dark:text-gray-400 hover:text-blancoPuro hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md px-4 py-1 transition-colors font-normal"
+        @click="onLogout"
+      >
+        Logout
+      </span>
+
+      <!-- Botón de Modo Oscuro -->
+      <button
+        class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        @click="updateDarkMode(!isDarkMode)"
+      >
+        <svg
+          v-if="!isDarkMode"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6 text-gray-400"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+        </svg>
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6 text-white"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</template>
+
