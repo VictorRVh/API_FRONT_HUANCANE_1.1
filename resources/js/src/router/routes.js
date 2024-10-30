@@ -78,7 +78,16 @@ export default [
             permissions: ['units-all', 'units-view'],
         }
     },
-   
+    {
+        path: '/IndicadorLogro/:idUnidad',
+        name: 'IndicadorLogro',
+        component: ()=>import('../pages/Especialidad/IndicadoresLogro.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['indicators-all', 'indicators-view'],
+        }
+    },   
     {
         path: '/estudiantes',
         name: 'estudiantes',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\IndicadorLogro;
+use App\Models\UnidadDidactica;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -121,5 +122,29 @@ class IndicadorLogroController extends Controller
             'message' => 'Indicador de logro eliminado exitosamente',
             'status' => 204,
         ], 204);
+    }
+
+    public function getIndicadoresPorUnidadDidactica($id_unidad_didactica)
+    {
+        $unidadDidactica = UnidadDidactica::with('indicadoresLogro')
+            ->where('id_unidad_didactica', $id_unidad_didactica)
+            ->first();
+
+        if (!$unidadDidactica) {
+            return response()->json(['message' => 'Unidad didáctica no encontrada'], 404);
+        }
+
+        return response()->json([
+            'unidad_didactica' => [
+                'id_unidad_didactica' => $unidadDidactica->id_unidad_didactica,
+                'nombre_unidad' => $unidadDidactica->nombre_unidad,
+                'indicadores_logro' => $unidadDidactica->indicadoresLogro->map(function ($indicador) {
+                    return [
+                        'id_indicador' => $indicador->id_indicador,
+                        'descripcion' => $indicador->descripcion,
+                    ];
+                })
+            ]
+        ], 200);
     }
 }

@@ -64,6 +64,14 @@ class PermissionTableSeeder extends Seeder
             'units-edit',
             'units-delete',
 
+            // Indocador de logro indicators
+
+            'indicators-all',
+            'indicators-view',
+            'indicators-create',
+            'indicators-edit',
+            'indicators-delete',
+
         ];
 
         $permissions = array_map(function ($name) {

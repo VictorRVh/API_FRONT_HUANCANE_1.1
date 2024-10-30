@@ -49,8 +49,13 @@ const hasPermission = itemPermissions => itemPermissions.some(perm => userPermis
 </script>
 
 <template>
+<<<<<<< HEAD
   <div class="flex flex-col h-5/5 bg-blancoPuro dark:bg-gray-800 text-granate dark:text-gray-400 font-inter ml-5 w-11/12 max-w-3xl">
     <h2 class="text-lg font-semibold text-negroClaro dark:text-gray-400 mt-4 mb-2 ml-4">HERRAMIENTAS</h2>
+=======
+    <!-- Contenedor Principal del Dashboard con margen superior, bordes redondeados y sin sombra -->
+    <div class="flex flex-col h-5/5 bg-blancoPuro dark:bg-dark-fondo text-granate dark:text-dark-text font-inter w-11/12 max-w-3xl ">
+>>>>>>> 03558332299924e8d7e28fa1e7bc5507fd867797
 
     <!-- Menú de elementos -->
     <div class="flex flex-col items-start w-full mt-2 space-y-2">

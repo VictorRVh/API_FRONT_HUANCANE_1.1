@@ -268,22 +268,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('indicador_logro', [
         \App\Http\Controllers\IndicadorLogroController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:indicators-all|indicators-view');
+
+    Route::get('indicador_logro/{id_unidad_didactica}', [
+        \App\Http\Controllers\IndicadorLogroController::class,
+        'getIndicadoresPorUnidadDidactica',
+    ])->middleware('permission:indicators-all|indicators-view');
 
     Route::post('indicador_logro', [
         \App\Http\Controllers\IndicadorLogroController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:indicators-all|indicators-create');
 
     Route::patch('indicador_logro/{indicadorId}', [
         \App\Http\Controllers\IndicadorLogroController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:indicators-all|indicators-edit');
 
     Route::delete('indicador_logro/{indicadorId}', [
         \App\Http\Controllers\IndicadorLogroController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:indicators-all|indicators-delete');
 
 
     // RUTA PARA EXPERIENCIAS FORMATIVAS
