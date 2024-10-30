@@ -60,7 +60,7 @@ const initialFormData = () => {
     email: null,
     password: null,
     confirm_password: null,
-    roles: "8",
+    roles: [8],
   };
 };
 
