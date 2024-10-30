@@ -84,6 +84,13 @@ const SeeMore = (id) => {
   });
 };
 
+const SeeMoreExperiencia = (id) => {
+  router.push({
+    name: "ExperienciaFormativa",
+    params: { idPrograma: id },
+  });
+};
+
 console.log("nuievos Programes: ", ProgramStore.Programs.programas);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
@@ -122,6 +129,7 @@ console.log("nuievos Programes: ", ProgramStore.Programs.programas);
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
                   <ViewButton @click="SeeMore(Program?.id_programa)" />
+                  <ViewButton @click="SeeMoreExperiencia(Program?.id_programa)" />
                   <EditButton @click="showSlider(true, Program)" />
                   <DeleteButton @click="onDelete(Program)" />
                 </div>

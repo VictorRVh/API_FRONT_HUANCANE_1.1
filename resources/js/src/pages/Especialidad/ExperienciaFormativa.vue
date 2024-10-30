@@ -13,9 +13,9 @@ import EditButton from "../../components/ui/EditButton.vue";
 import DeleteButton from "../../components/ui/DeleteButton.vue";
 import ViewButton from "../../components/ui/ViewButton.vue";
 import AuthorizationFallback from "../../components/page/AuthorizationFallback.vue";
-import UnitsSlider from "../../components/page/Especialidad/UnidadeSlider.vue";
+import ExperienciaSlider from "../../components/page/Especialidad/ExperienciaSlider.vue";
 
-import useUnitsStore from "../../store/Especialidad/useUnidadesStore";
+import useExperienciasStore from "../../store/Especialidad/useExperienciaFormativa";
 
 import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
@@ -43,28 +43,27 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
-const UnitsStore = useUnitsStore();
+const experienciasStore = useExperienciasStore();
 
-// UnitsStore.Units.Units
 
-if (!UnitsStore.Units.length) await UnitsStore.loadUnits(props.idPrograma);
+if (!experienciasStore.experiencias.length) await experienciasStore.loadExperiencias(props.idPrograma);
 
-const { slider, sliderData, showSlider, hideSlider } = useSlider("Units-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("experiencias-crud");
 const { showConfirmModal, showToast } = useModalToast();
-const { destroy: deleteSpecialy, deleting } = useHttpRequest("/unidad_didactica");
+const { destroy: deleteSpecialy, deleting } = useHttpRequest("/experiencia_formativa");
 const { isUserAuthenticated } = useAuth();
 
-const onDelete = (Units) => {
+const onDelete = (experiencias) => {
   if (deleting.value) return;
 
   showConfirmModal(null, async (confirmed) => {
     if (!confirmed) return;
 
-    const isDeleted = await deleteSpecialy(Units?.id_unidad_didactica);
+    const isDeleted = await deleteSpecialy(experiencias?.id_experiencia_formativa);
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
-      showToast(`Units "${Units?.nombre_unidad}" deleted successfully...`);
-      UnitsStore.loadUnits(props.idPrograma);
+      showToast(`Experiencias "${experiencias?.nombre_unidad}" deleted successfully...`);
+      experienciasStore.loadExperiencias(props.idPrograma);
       userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
@@ -72,14 +71,7 @@ const onDelete = (Units) => {
   });
 };
 
-const SeeMore = (id) => {
-  router.push({
-    name: "IndicadorLogro",
-    params: { idUnidad: id },
-  });
-};
-
-console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
+console.log("nuievos Unitses: ", experienciasStore.experiencias);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>
@@ -88,7 +80,7 @@ console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
   <AuthorizationFallback :permissions="['units-all', 'units-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">{{}} / Units</h2>
+        <h2 class="text-active font-bold text-2xl">{{}} / Experiencias</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -97,28 +89,27 @@ console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
           <THead>
             <Tr>
               <Th> Id </Th>
-              <Th> Unitss </Th>
+              <Th> Experiencia </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
             <Tr
-              v-for="Units in UnitsStore.Units.unidades_didacticas"
-              :key="Units.id_unidad_didactica"
+              v-for="experiencias in experienciasStore.experiencias.experiencias_formativas"
+              :key="experiencias.id_experiencia_formativa"
             >
-              <Td>{{ Units?.id_unidad_didactica }}</Td>
+              <Td>{{ experiencias?.id_experiencia_formativa }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
-                  {{ Units?.nombre_unidad }}
+                  {{ experiencias?.nombre_experiencia }}
                 </div>
               </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(Units?.id_unidad_didactica)" />
-                  <EditButton @click="showSlider(true, Units)" />
-                  <DeleteButton @click="onDelete(Units)" />
+                  <EditButton @click="showSlider(true, experiencias)" />
+                  <DeleteButton @click="onDelete(experiencias)" />
                 </div>
               </Td>
             </Tr>
@@ -127,10 +118,10 @@ console.log("nuievos Unitses: ", UnitsStore.Units.unidades_didacticas);
       </div>
     </div>
 
-    <UnitsSlider
+    <ExperienciaSlider
       :ProgramId="props.idPrograma"
       :show="slider"
-      :Unit="sliderData"
+      :experiencia="sliderData"
       @hide="hideSlider"
     />
   </AuthorizationFallback>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExperienciaFormativa;
+use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -121,5 +122,27 @@ class ExperienciaFormativaController extends Controller
             'message' => 'Experiencia formativa eliminada exitosamente',
             'status' => 204,
         ], 204);
+    }
+
+
+    public function getExperienciaFormativaPrograma($id_programa)
+    {
+        $programa = Programa::with('experienciasFormativas')
+            ->where('id_programa', $id_programa)
+            ->first();
+
+        if (!$programa) {
+            return response()->json(['message' => 'Programa no encontrado'], 404);
+        }
+
+        return response()->json([
+            'programa' => $programa->only(['id_programa', 'nombre_programa']),
+            'experiencias_formativas' => $programa->experienciasFormativas->map(function ($experiencia) {
+                return [
+                    'id_experiencia_formativa' => $experiencia->id_experiencia,
+                    'nombre_experiencia' => $experiencia->nombre_experiencia
+                ];
+            })
+        ], 200);
     }
 }

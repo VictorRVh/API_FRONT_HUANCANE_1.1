@@ -3,14 +3,14 @@ import { defineStore } from 'pinia';
 // useHttpRequest para interactuar con la API
 import useHttpRequest from '../../composables/useHttpRequest';
 
-const useExperienciaStore = defineStore('experiencia', () => {
+const useExperienciasStore = defineStore('experiencia', () => {
     // Importamos las funciones necesarias de useHttpRequest
     const {
         //index: getUnits,
         show: getExperienciaById, // Añadimos el método show para obtener una especialidad por ID
         //show: getunits,
-        loading: ExperienciaLoading,
-        initialLoading: ExperienciaFirstTimeLoading,
+        loading: experienciasLoading,
+        initialLoading: ExperienciasFirstTimeLoading,
     } = useHttpRequest('/experiencia_formativa');
 
     const experiencia = ref(null); // Para almacenar una sola especialidad
@@ -22,26 +22,26 @@ const useExperienciaStore = defineStore('experiencia', () => {
     };
 
     // Función para cargar todas las especialidades
-    const loadUnits = async (id) => {
-        const response = await getUnitById(id);
+    const loadExperiencias = async (id) => {
+        const response = await getExperienciaById(id);
         experiencias.value = response;
     };
 
     // Nueva función para cargar una especialidad por su ID
-    const loadUnitById = async (id) => {
-        const response = await getUnitById(id); // Usamos el método show
-        Unit.value = response;
+    const loadExperienciaById = async (id) => {
+        const response = await getExperienciaById(id); // Usamos el método show
+        experiencia.value = response;
     };
 
     return {
-        Unit,
-        setUnit,
-        Units,
-        UnitsLoading,
-        UnitsFirstTimeLoading,
-        loadUnits,
-        loadUnitById, // Retornamos la nueva función para obtener una especialidad por ID
+        experiencia,
+        setExperiencia,
+        experiencias,
+        experienciasLoading,
+        ExperienciasFirstTimeLoading,
+        loadExperiencias,
+        loadExperienciaById, // Retornamos la nueva función para obtener una especialidad por ID
     };
 });
 
-export default useUnitsStore;
+export default useExperienciasStore;

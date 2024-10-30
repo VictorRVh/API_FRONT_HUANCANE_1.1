@@ -298,6 +298,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:permissions-all|permissions-view');
 
+    Route::get('experiencia_formativa/{id_programa}', [
+        \App\Http\Controllers\ExperienciaFormativaController::class,
+        'getExperienciaFormativaPrograma',
+    ])->middleware('permission:permissions-all|permissions-view');
+
     Route::post('experiencia_formativa', [
         \App\Http\Controllers\ExperienciaFormativaController::class,
         'store',

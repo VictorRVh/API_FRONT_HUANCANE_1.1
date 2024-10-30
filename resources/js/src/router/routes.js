@@ -79,6 +79,16 @@ export default [
         }
     },
     {
+        path: '/experienciaFormativa/:idPrograma',
+        name: 'ExperienciaFormativa',
+        component: ()=>import('../pages/Especialidad/ExperienciaFormativa.vue'),
+        props: true, // Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['units-all', 'units-view'],
+        }
+    },
+    {
         path: '/IndicadorLogro/:idUnidad',
         name: 'IndicadorLogro',
         component: ()=>import('../pages/Especialidad/IndicadoresLogro.vue'),

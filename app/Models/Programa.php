@@ -24,6 +24,11 @@ class Programa extends Model
         return $this->belongsTo(Planes::class, 'id_plan');
     }
 
+    public function experienciasFormativas()
+    {
+        return $this->hasMany(ExperienciaFormativa::class, 'id_programa', 'id_programa');
+    }
+
     public function unidadesDidacticas()
     {
         return $this->hasMany(UnidadDidactica::class, 'id_programa');
