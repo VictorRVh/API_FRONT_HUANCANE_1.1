@@ -28,7 +28,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row w-full h-screen bg-white dark:bg-gray-800 relative overflow-hidden">
+  <div class="flex flex-col lg:flex-row w-full h-screen bg-white dark:bg-gray-800 overflow-hidden">
     <!-- Botón para abrir el sidebar en pantallas pequeñas -->
     <button
       v-if="!isLargeScreen && !sidebarOpen"
@@ -43,7 +43,7 @@ onBeforeUnmount(() => {
     <!-- Sidebar Header -->
     <header
       v-if="sidebarOpen || isLargeScreen"
-      class="w-full lg:w-[15%] bg-plomoClaro dark:bg-gray-800 min-h-[80px] sticky top-0 shadow-lg z-10"
+      class="w-full lg:w-[15%] bg-plomoClaro dark:bg-gray-800 h-full sticky top-0 shadow-lg z-10"
     >
       <DashboardHeader class="container mx-auto px-4 xl:px-0 gap-4 text-negroClaro dark:text-white" />
 
@@ -60,11 +60,11 @@ onBeforeUnmount(() => {
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 h-full relative bg-gray-100 dark:bg-gray-900 overflow-y-auto">
-      <div class="flex items-center justify-between p-4 bg-blancoPuro dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 mx-auto max-w-[1172px] rounded-lg w-[95%]">
+    <main class="flex-1 h-full bg-gray-100 dark:bg-gray-900 overflow-hidden">
+      <div class="flex items-center justify-between p-4 bg-blancoPuro dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 mx-auto rounded-lg w-[95%] max-w-[1240px]">
         <!-- Left Section -->
         <div class="text-left rounded-lg p-2">
-          <p class="text-xs font-regular text-dark-fondo dark:text-white">INTRANET</p>
+          <p class="text-lg font-regular text-dark-fondo dark:text-white">INTRANET</p>
           <p class="text-xs font-semibold mt-1 text-dark-surface dark:text-gray-300">CEPRO HUANCANÉ</p>
         </div>
 
@@ -80,11 +80,21 @@ onBeforeUnmount(() => {
 
       <PageLoader :loading="asyncLoading" />
 
-      <div class="container mx-auto max-w-[1172px] px-4 lg:px-0 h-full">
+      <!-- Contenido principal sin scroll -->
+      <div class="container mx-auto max-w-[1240px] w-[95%] h-full bg-white rounded-md shadow-lg mt-2 p-4 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600">
+        <!-- Aquí van los botones -->
+        <div class="flex justify-between items-center mb-4">
+          <p>Aquí van los botones</p>
+          <button class="btn-primary">Botón 1</button>
+          <button class="btn-secondary">Botón 2</button>
+        </div>
+
         <RouterView v-slot="{ Component }">
           <template v-if="Component">
             <Suspense @pending="asyncLoading = true" @resolve="asyncLoading = false">
-              <component :is="Component" />
+              <div class="overflow-hidden w-full h-full">
+                <component :is="Component" />
+              </div>
               <template #fallback>
                 <SuspenseFallback />
               </template>
