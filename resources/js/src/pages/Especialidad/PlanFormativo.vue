@@ -26,16 +26,6 @@ import useUserStore from "../../store/useUserStore";
 import useAuth from "../../composables/useAuth";
 
 // Obtener el objeto de la ruta actual
-const props = defineProps({
-  idEspecialidad: {
-    type: Number,
-    default: null,
-  },
-});
-// Acceder al parámetro de la ruta
-
-// Ahora puedes usar `idEspecialidad` en tu componente
-//console.log("ruta s", props.idEspecialidad);
 
 // Cargar la especialidad correspondiente cuando se monta el componente
 
@@ -73,13 +63,8 @@ const onDelete = (plan) => {
 };
 
 const SeeMore = (id) => {
-  router.push({
-    name: "programaFormativo",
-    params: { idPlan: id },
-  });
+ 
 };
-
-console.log("nuievos planes: ", planStore.plans);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 </script>

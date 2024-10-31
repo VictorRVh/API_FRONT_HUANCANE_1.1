@@ -24,11 +24,22 @@ import useRoleStore from "../../store/useRoleStore";
 import useUserStore from "../../store/useUserStore";
 import useAuth from "../../composables/useAuth";
 
+import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
+import { ref } from 'vue'; // Asegúrate de incluir ref
+
+// planStore.plans.plan
+
+
+
+
 const router = useRouter(); // Aquí es donde obtenemos el router
 
 const userStore = useUserStore();
 const roleStore = useRoleStore();
 const specialtiesStore = useSpecialtyStore();
+
+const planStore = usePlanStore();
+const selectedPlan = ref(0);
 
 // specialtyStore.specialties.especialidades
 
@@ -57,10 +68,22 @@ const onDelete = (specialty) => {
   });
 };
 
-const SeeMore = (id) => {
+if (!planStore.plans.length) await planStore.loadPlans();
+
+if (planStore.plans.length > 0) {
+    selectedPlan.value = planStore.plans[planStore.plans.length - 1].id_plan;
+    console.log("Plan seleccionado por defecto:", selectedPlan.value);
+  }
+
+const SeeMore = (idr) => {
+  console.log("id:", idr, "selectedPlan:", selectedPlan.value);
+  if (!selectedPlan.value) {
+    showToast("Please select a plan first.");
+    return;
+  }
   router.push({
-    name: "PlanesFormativos",
-    params: { idEspecialidad: id },
+    name: "programaFormativo",
+    params: { idEspecialidad: idr, idPlan: selectedPlan.value }, // Asegúrate de que estos nombres coincidan
   });
 };
 </script>
@@ -72,6 +95,20 @@ const SeeMore = (id) => {
         <h2 class="text-active font-bold text-2xl">Specialties</h2>
 
         <CreateButton @click="showSlider(true)" />
+      </div>
+
+      <div class="flex justify-between">
+
+        <select id="plan-select" v-model="selectedPlan" class="border rounded-md p-2">
+          <option value="" disabled>Select a plan</option>
+          <option
+            v-for="plan in planStore.plans"
+            :key="plan.id_plan"
+            :value="plan.id_plan"
+          >
+            {{ plan.nombre_plan }}
+          </option>
+        </select>
       </div>
 
       <div class="w-full">

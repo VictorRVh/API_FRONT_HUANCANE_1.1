@@ -59,16 +59,6 @@ export default [
         }
     },
     {
-        path: '/especialidad/:idEspecialidad',
-        name: 'PlanesFormativos',
-        component: ()=>import('../pages/Especialidad/PlanFormativo.vue'),
-        props: true, // Esto pasa los parámetros de ruta como props al componente
-        meta: {
-            layout: 'dashboard',
-            permissions: ['plan-all', 'plan-view'],
-        }
-    },
-    {
         path: '/unidadDidactica/:idPrograma',
         name: 'UnidadDidactica',
         component: ()=>import('../pages/Especialidad/UnidadDidactica.vue'),
@@ -99,9 +89,30 @@ export default [
         }
     },   
     {
-        path: '/estudiantes',
+        path: '/Plan',
+        name: 'plan',
+        component: () => import('../pages/Especialidad/PlanFormativo.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['plan-all', 'plan-view'],
+        },
+    },
+    {
+        path: '/docentes/:id',
+        name: 'docentes',
+        component: () => import('../pages/Estudiante/Estudiante.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['teachers-all', 'teachers-view'],
+        },
+    },
+    {
+        path: '/estudiantes/:id',
         name: 'estudiantes',
         component: () => import('../pages/Estudiante/Estudiante.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
         meta: {
             layout: 'dashboard',
             permissions: ['students-all', 'students-view'],

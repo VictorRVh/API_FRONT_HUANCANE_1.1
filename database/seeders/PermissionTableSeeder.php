@@ -43,6 +43,13 @@ class PermissionTableSeeder extends Seeder
             'students-edit',
             'students-delete',
             
+            // profesores 
+            'teachers-all',
+            'teachers-view',
+            'teachers-create',
+            'teachers-edit',
+            'teachers-delete',
+
             // permisos de plan 
             'plan-all',
             'plan-view',

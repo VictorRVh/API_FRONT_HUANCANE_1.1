@@ -1,4 +1,6 @@
 <script setup>
+import { defineProps } from "vue";
+
 import Table from "../../components/table/Table.vue";
 import THead from "../../components/table/THead.vue";
 import TBody from "../../components/table/TBody.vue";
@@ -20,10 +22,19 @@ import useSlider from "../../composables/useSlider";
 import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
 
+const props = defineProps({
+  id: {
+    type: Number,
+    default: 0,
+  },
+});
+
+//console.log()
+
 const userStore = useStudentsStore();
 const roleStore = useRoleStore();
 
-if (!userStore.students?.length) await userStore.loadStudents();
+if (!userStore.students?.length) await userStore.loadStudents(props.id);
 if (!roleStore.roles?.length) await roleStore.loadRoles();
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("user-crud");
@@ -39,7 +50,7 @@ const onDelete = (user) => {
     const isDeleted = await deleteUser(user?.id);
     if (isDeleted) {
       showToast(`"${user?.name}" deleted successfully...`);
-      userStore.loadStudents();
+      userStore.loadStudents(props.id);
     }
   });
 };

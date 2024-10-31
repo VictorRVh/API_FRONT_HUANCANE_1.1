@@ -5,10 +5,11 @@ import useHttpRequest from '../../composables/useHttpRequest';
 
 const useStudentsStore = defineStore('students', () => {
     const {
-        index: getStudents,
+        //index: getStudents,
+        show: getStudents,
         loading: studentsLoading,
         initialLoading: studentsFirstTimeLoading,
-    } = useHttpRequest('/users-by-role/8');
+    } = useHttpRequest('/users-by-role');
 
     const student = ref(null);
     const students = ref([]);
@@ -17,8 +18,8 @@ const useStudentsStore = defineStore('students', () => {
         student.value = authStudent;
     };
 
-    const loadStudents = async () => {
-        const response = await getStudents();
+    const loadStudents = async (id) => {
+        const response = await getStudents(id);
         students.value = response;
     };
 

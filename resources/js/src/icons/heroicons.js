@@ -19,6 +19,7 @@ const icons = {
   EyeIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/EyeIcon')),
   PencilSquareIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/PencilSquareIcon')),
   TrashIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/TrashIcon')),
+  CalendarIcon: defineAsyncComponent( () => import('@heroicons/vue/24/solid/CalendarIcon')),
   // Agrega más íconos aquí según sea necesario academic-
 };
 
