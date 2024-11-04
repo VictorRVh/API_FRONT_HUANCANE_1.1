@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
       <PageLoader :loading="asyncLoading" />
 
       <!-- Contenido principal sin scroll -->
-      <div class="container mx-auto max-w-[1240px] w-[95%] h-full bg-white rounded-md shadow-lg mt-2 p-4 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600">
+      <div class="container mx-auto max-w-full w-[95%] h-full max-h-full bg-white rounded-md shadow-lg mt-2 p-4 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 overflow-auto">
         <!-- Aquí van los botones -->
         <div class="flex justify-between items-center mb-4">
           <p>Aquí van los botones</p>
@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
         <RouterView v-slot="{ Component }">
           <template v-if="Component">
             <Suspense @pending="asyncLoading = true" @resolve="asyncLoading = false">
-              <div class="overflow-hidden w-full h-full">
+              <div class="w-full h-full">
                 <component :is="Component" />
               </div>
               <template #fallback>

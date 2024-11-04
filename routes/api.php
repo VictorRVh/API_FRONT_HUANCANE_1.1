@@ -110,22 +110,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sedes', [
         \App\Http\Controllers\SedeController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:places-all|places-view');
 
     Route::post('sedes', [
         \App\Http\Controllers\SedeController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:places-all|places-create');
 
     Route::patch('sedes/{sedeId}', [
         \App\Http\Controllers\SedeController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:places-all|places-edit');
 
     Route::delete('sedes/{sedeId}', [
         \App\Http\Controllers\SedeController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:places-all|places-delete');
 
         
     // RUTAS DE TURNOS

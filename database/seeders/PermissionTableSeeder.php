@@ -79,6 +79,13 @@ class PermissionTableSeeder extends Seeder
             'indicators-edit',
             'indicators-delete',
 
+            // sededes 
+            'places-all',
+            'places-view',
+            'places-create',
+            'places-edit',
+            'places-delete'
+
         ];
 
         $permissions = array_map(function ($name) {

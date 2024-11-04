@@ -103,6 +103,12 @@ const menuItems = [
     route: "permissions",
     permissions: ["permissions-all", "permissions-view"],
   },
+  {
+    name: "Sede",
+    icon: "BookmarkSquareIcon",
+    route: "sedes",
+    permissions: ['places-all', 'places-view'],
+  },
 ];
 
 // Comprobar permisos

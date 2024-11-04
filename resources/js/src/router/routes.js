@@ -117,6 +117,18 @@ export default [
             layout: 'dashboard',
             permissions: ['students-all', 'students-view'],
         },
+    },
+    {
+        path: '/sede',
+        name: 'sedes',
+        component: () => import('../pages/Sede/Sede.vue'),
+       // props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['places-all', 'places-view'],
+        },
     }
+
+    
     /* todlos que se aumento */
 ];
