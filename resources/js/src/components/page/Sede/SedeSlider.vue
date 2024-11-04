@@ -51,8 +51,8 @@ const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
 const requiredPlaces = computed(() => {
-  if (!props.place?.id_sede) return ["place-all", "place-create"];
-  else return ["place-all", "place-edit"];
+  if (!props.place?.id_sede) return ["places-all", "places-create"];
+  else return ["places-all", "places-edit"];
 });
 
 // Computed para el título
@@ -65,6 +65,7 @@ const title = computed(() =>
 // Inicialización del formulario
 const initialFormData = () => ({
   nombre_sede: null,
+  ubicacion: null,
 });
 
 // Variables reactivas para los datos del formulario y los errores
@@ -77,7 +78,10 @@ watch(
   (newValue) => {
     if (newValue) {
       if (props.place?.id_sede) {
-        formData.value = { nombre_sede: props.place.nombre_sede };
+        formData.value = { 
+          nombre_sede: props.place.nombre_sede,
+          ubicacion: props.place.ubicacion
+        };
       } else {
         formData.value = initialFormData();
         formErrors.value = {};
@@ -92,6 +96,10 @@ watch(
 // Esquema de validación de Yup
 const schema = yup.object().shape({
   nombre_sede: yup
+    .string()
+    .nullable()
+    .required("El nombre de la sede es obligatorio"),
+    ubicacion: yup
     .string()
     .nullable()
     .required("El nombre de la sede es obligatorio"),
@@ -149,6 +157,14 @@ const onSubmit = async () => {
           :focus="show"
           label="Nombre de la sede"
           :error="formErrors?.nombre_sede"
+          required
+        />
+
+        <FormInput
+          v-model="formData.ubicacion"
+          :focus="show"
+          label="Ubicación"
+          :error="formErrors?.ubicacion"
           required
         />
 

@@ -38,10 +38,10 @@ const roleStore = useRoleStore();
 const placesStore = usePlaceStore();
 
 
-console.log("victoddddddddddd",placesStore)
 
 
-if (!placesStore.places.length) await placesStore.loadPlaces();
+
+if (!placesStore.Places.length) await placesStore.loadPlaces();
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("Place-crud");
 const { showConfirmModal, showToast } = useModalToast();
@@ -66,6 +66,7 @@ const onDelete = (Place) => {
   });
 };
 
+console.log("victoddddddddddd",placesStore.Places.sedes)
 
 const SeeMore = (idr) => {
 
@@ -73,8 +74,6 @@ const SeeMore = (idr) => {
 </script>
 
 <template>
-
-   <h3> hola vi</h3>
 
   <AuthorizationFallback :permissions="['places-all', 'places-view']">
     <div class="w-full space-y-4 py-6">
@@ -90,19 +89,25 @@ const SeeMore = (idr) => {
             <Tr>
               <Th> Id </Th>
               <Th> places </Th>
+              <Th> Ubicación </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
             <Tr
-              v-for="Place in placesStore.places"
+              v-for="Place in placesStore.Places.sedes"
               :key="Place.id_sede"
             >
               <Td>{{ Place?.id_sede }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
                   {{ Place?.nombre_sede }}
+                </div>
+              </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ Place?.ubicacion }}
                 </div>
               </Td>
 
@@ -119,6 +124,6 @@ const SeeMore = (idr) => {
       </div>
     </div>
 
-    <PlaceSlider :show="slider" :Place="sliderData" @hide="hideSlider" />
+    <PlaceSlider :show="slider" :place="sliderData" @hide="hideSlider" />
   </AuthorizationFallback>
 </template>
