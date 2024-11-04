@@ -19,34 +19,33 @@ import useModalToast from "../../../composables/useModalToast";
 import useAuth from "../../../composables/useAuth";
 import * as yup from "yup";
 
-// Props que recibe el componente
 const props = defineProps({
   show: {
     type: Boolean,
     default: () => false,
   },
   group: {
-    type: [Object, null],
-    default: () => null,
+    type: Object,
+    default: null,
   },
   sedeId: {
-    type: Number,
+    type: Object,
     default: null,
   },
   turnoId: {
-    type: Number,
+    type: Object,
     default: null,
   },
   specialtyId: {
-    type: Number,
+    type: Object,
     default: null,
   },
   planId: {
-    type: Number,
+    type: Object,
     default: null,
   },
   docenteId: {
-    type: Number,
+    type: Object,
     default: null,
   },
 });
@@ -69,8 +68,9 @@ const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
 const requiredSpecialties = computed(() => {
-  if (!props.group?.id_grupo) return ["program-all", "program-create"];
-  else return ["program-all", "program-edit"];
+  return props.group?.id_grupo
+    ? ["groups-all", "groups-edit"]
+    : ["groups-all", "groups-create"];
 });
 
 // Computed para el título
@@ -78,18 +78,16 @@ const title = computed(() =>
   props.group ? `Update group "${props.group?.nombre_grupo}"` : "Add new group"
 );
 
-console.log("Los id: ", props.planId, props.specialtyId);
 // Inicialización del formulario
 const initialFormData = () => ({
   nombre_grupo: null,
-  id_sede: props.sedeId,
-  id_turno: props.turnoId,
-  id_especialidad: props.specialtyId,
-  id_plan: props.planId,
-  id_docente: props.docenteId,
+  id_sede: null,
+  id_turno: null,
+  id_especialidad: null,
+  id_plan: null,
+  id_docente: null,
 });
 
-// Variables reactivas para los datos del formulario y los errores
 const formData = ref(initialFormData());
 const formErrors = ref({});
 
@@ -98,12 +96,7 @@ watch(
   () => props.show,
   (newValue) => {
     if (newValue) {
-      if (props.group?.id_grupo) {
-        formData.value = { nombre_grupo: props.group.nombre_group };
-      } else {
-        formData.value = initialFormData();
-        formErrors.value = {};
-      }
+      formData.value = initialFormData();
     } else {
       formData.value = initialFormData();
       formErrors.value = {};
@@ -111,50 +104,80 @@ watch(
   }
 );
 
-// Esquema de validación de Yup
+// Opciones de selección para cada campo
+/*
+const initialFormData = () => ({
+  nombre_grupo: props.group?.nombre_grupo || null,
+  id_sede: props.sedeId || null,
+  id_turno: props.turnoId || null,
+  id_especialidad: props.specialtyId || null,
+  id_plan: props.planId || null,
+  id_docente: props.docenteId || null,
+});
+*/
+//console.log("se imprime en form",props.sedeId)
+
+
+
+const sedeOptions= computed(() => props.sedeId.map(sede => ({
+  name: sede.nombre_sede,
+  id: sede.id_sede,
+})));
+//const sedeOptions =  ref(sedeO.value); // Ejemplo de opciones
+const turnoOptions = ref([
+  { id: 1, name: "Turno Mañana" },
+  { id: 2, name: "Turno Tarde" },
+]);
+const specialtyOptions = computed(() => props.specialtyId.map(specialty => ({
+       name: specialty.nombre_especialidad,
+       id: specialty.id_especialidad,
+})))
+const planOptions = computed(() => props.planId.map(plan => ({
+       name: plan.nombre_plan,
+       id: plan.id_plan,
+})));
+const docenteOptions = computed(() => props.docenteId.map(teacher => ({
+       name: teacher.name,
+       id: teacher.id,
+})));
+
+// Validación de Yup
 const schema = yup.object().shape({
-  nombre_grupo: yup
-    .string()
-    .nullable()
-    .required("El nombre de la grupo es obligatorio"),
+  nombre_grupo: yup.string().nullable().required("El nombre del grupo es obligatorio"),
+  id_sede: yup.number().nullable().required("La sede es obligatoria"),
+  id_turno: yup.number().nullable().required("El turno es obligatorio"),
+  id_especialidad: yup.number().nullable().required("La especialidad es obligatoria"),
+  id_plan: yup.number().nullable().required("El plan es obligatorio"),
+  id_docente: yup.number().nullable().required("El docente es obligatorio"),
 });
 
-// Función para manejar el envío del formulario
+// Envío del formulario
 const onSubmit = async () => {
-  // Evitar múltiples envíos
   if (saving.value || updating.value) return;
 
   const data = { ...formData.value };
-
-  // Validar el formulario con Yup
   const { validated, errors } = await runYupValidation(schema, data);
   if (!validated) {
-    formErrors.value = errors; // Mostrar los errores
+    formErrors.value = errors;
     return;
   }
-  formErrors.value = {}; // Limpiar los errores
 
-  // Crear o actualizar la program
   const response = props.group?.id_grupo
     ? await updateGroup(props.group?.id_grupo, data)
     : await createGroup(data);
 
-  // Si la respuesta es exitosa
-
-  console.log("response fro: ", response.grupo?.id_grupo);
-
   if (response.grupo?.id_grupo) {
-    showToast(
-      `grupo ${props.group?.id_grupo ? "updated" : "created"} successfully`
+    showToast(`Grupo ${props.group?.id_grupo ? "actualizado" : "creado"} con éxito`);
+    groupStore.loadGroups(
+      props.idSede,
+      props.idTurno,
+      props.idEspecialidad,
+      props.idPlan,
+      props.idDocente
     );
-
-    // Cargar datos actualizados en las tiendas
-    groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
     userStore.loadUsers();
     roleStore.loadRoles();
     isUserAuthenticated();
-
-    // Cerrar el modal
     emit("hide");
   } else {
     showToast("Error al guardar el grupo. Inténtalo de nuevo.", "error");
@@ -169,50 +192,60 @@ const onSubmit = async () => {
         <FormInput
           v-model="formData.nombre_grupo"
           :focus="show"
-          label="Nombre del gruopo"
+          label="Nombre del grupo"
           :error="formErrors?.nombre_grupo"
           required
         />
 
-        <FormInput
-          v-model="formData.id_sede"
-          :focus="show"
-          label="Sede"
-          :error="formErrors?.id_sede"
-          required
-        />
+        <FormLabelError label="Selecciona la sede">
+          <VSelect
+            v-model="formData.id_sede"
+            :options="sedeOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_sede"
+          />
+        </FormLabelError>
 
-        <FormInput
-          v-model="formData.id_turno"
-          :focus="show"
-          label="Turno"
-          :error="formErrors?.id_turno"
-          required
-        />
+        <FormLabelError label="Selecciona el turno">
+          <VSelect
+            v-model="formData.id_turno"
+            :options="turnoOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_turno"
+          />
+        </FormLabelError>
 
-        <FormInput
-          v-model="formData.id_especialidad"
-          :focus="show"
-          label="Especialidad"
-          :error="formErrors?.id_especialidad"
-          required
-        />
+        <FormLabelError label="Selecciona la especialidad">
+          <VSelect
+            v-model="formData.id_especialidad"
+            :options="specialtyOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_especialidad"
+          />
+        </FormLabelError>
 
-        <FormInput
-          v-model="formData.id_plan"
-          :focus="show"
-          label="Plan"
-          :error="formErrors?.id_plan"
-          required
-        />
+        <FormLabelError label="Selecciona el plan">
+          <VSelect
+            v-model="formData.id_plan"
+            :options="planOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_plan"
+          />
+        </FormLabelError>
 
-        <FormInput
-          v-model="formData.id_docente"
-          :focus="show"
-          label="Docente"
-          :error="formErrors?.id_docente"
-          required
-        />
+        <FormLabelError label="Selecciona el docente">
+          <VSelect
+            v-model="formData.id_docente"
+            :options="docenteOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_docente"
+          />
+        </FormLabelError>
 
         <Button
           :title="group?.id_grupo ? 'Save' : 'Create'"

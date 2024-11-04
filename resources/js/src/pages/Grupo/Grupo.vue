@@ -21,33 +21,40 @@ import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
 
 import useRoleStore from "../../store/useRoleStore";
-import useUserStore from "../../store/useUserStore";
+//import useUserStore from "../../store/useUserStore";
 import useAuth from "../../composables/useAuth";
 import GrupoSlider from "../../components/page/Grupo/GrupoSlider.vue";
 
+import useSpecialtyStore from "../../store/Especialidad/useEspecialidadStore"
+import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
+import usePlaceStore from "../../store/Sede/useSedeStore";
 
-const props = defineProps({
-  idSede: {
-    type: Number,
-    default: null,
-  },
-  idTurno: {
-    typeof: Number,
-    default: null,
-  },
-  idEspecialidad: {
-    typeof: Number,
-    default: null,
-  },
-  idPlan: {
-    typeof: Number,
-    default: null,
-  },
-  idDocente: {
-    typeof: Number,
-    default: null,
-  },
-});
+import useStudentsStore from "../../store/Estudiante/useStudentStore";
+
+
+const specialtiesStore = useSpecialtyStore();
+if (!specialtiesStore.specialties.length) await specialtiesStore.loadSpecialties();
+
+
+const planStore = usePlanStore();
+// planStore.plans.plan
+if (!planStore.plans.length) await planStore.loadPlans();
+
+
+const placesStore = usePlaceStore();
+if (!placesStore.Places.length) await placesStore.loadPlaces();
+
+
+const userStore = useStudentsStore();
+if (!userStore.students?.length) await userStore.loadStudents('7');
+
+// pruebas de consulta 
+//console.log("grupo demo: ",specialtiesStore.specialties)
+//console.log("grupo demo: ",planStore.plans)
+//console.log("grupo demo: ",placesStore.Places.sedes)
+
+//console.log("grupo demo: ",userStore.students)
+
 
 // Acceder al parámetro de la ruta
 
@@ -57,13 +64,11 @@ const props = defineProps({
 // Cargar la especialidad correspondiente cuando se monta el componente
 
 const router = useRouter(); // Aquí es donde obtenemos el router
-
-const userStore = useUserStore();
 const roleStore = useRoleStore();
 const groupStore = useGroupsStore();
 
-if (!groupStore.groups.length)
-  await groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
+//if (!groupStore.groups.length)
+//  await groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("group-crud");
 const { showConfirmModal, showToast } = useModalToast();
@@ -81,7 +86,6 @@ const onDelete = (group) => {
     if (isDeleted) {
       showToast(`Grupo "${group?.nombre_grupo}" deleted successfully...`);
       groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
-      userStore.loadUsers();
       roleStore.loadRoles();
       isUserAuthenticated();
     }
@@ -108,7 +112,7 @@ const SeeMoreExperiencia = (id) => {
 </script>
 
 <template>
-  <AuthorizationFallback :permissions="['program-all', 'program-view']">
+  <AuthorizationFallback :permissions="['groups-all', 'groups-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
         <h2 class="text-active font-bold text-2xl">{{}} / Grupos</h2>
@@ -152,11 +156,11 @@ const SeeMoreExperiencia = (id) => {
     </div>
 
     <GrupoSlider
-      :sedeId="props.idSede"
-      :turnoId="props.idTurno"
-      :specialtyId="props.idEspecialidad"
-      :planId="props.idPlan"
-      :docenteId="props.idDocente"
+      :sedeId="placesStore.Places.sedes"
+      :turnoId="['M','T','N']"
+      :specialtyId="specialtiesStore.specialties"
+      :planId="planStore.plans"
+      :docenteId="userStore.students"
       :show="slider"
       :group="sliderData"
       @hide="hideSlider"

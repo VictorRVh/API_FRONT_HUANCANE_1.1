@@ -324,22 +324,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('grupo', [
         \App\Http\Controllers\GrupoController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:groups-all|groups-view');
 
     Route::post('grupo', [
         \App\Http\Controllers\GrupoController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:groups-all|groups-create');
 
     Route::patch('grupo/{grupoId}', [
         \App\Http\Controllers\GrupoController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:groups-all|groups-edit');
 
     Route::delete('grupo/{grupoId}', [
         \App\Http\Controllers\GrupoController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:groups-all|groups-delete');
 
 
     // RUTA PARA MATRICULAS

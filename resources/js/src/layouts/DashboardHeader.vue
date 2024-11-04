@@ -113,7 +113,7 @@ const menuItems = [
     name: "Grupos",
     icon: "UsersIcon",
     route: "grupos",
-    permissions: ["permissions-all", "permissions-view"],
+    permissions: ["groups-all", "groups-view"],
   },
 
 ];

@@ -136,7 +136,7 @@ export default [
         props: true, // units-all Esto pasa los parámetros de ruta como props al componente
         meta: {
             layout: 'dashboard',
-            permissions: ['permissions-all', 'permissions-view'],
+            permissions: ['groups-all', 'groups-view'],
         },
     },
     

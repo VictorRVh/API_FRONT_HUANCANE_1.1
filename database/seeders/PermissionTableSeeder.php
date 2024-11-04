@@ -84,8 +84,14 @@ class PermissionTableSeeder extends Seeder
             'places-view',
             'places-create',
             'places-edit',
-            'places-delete'
-
+            'places-delete',
+            
+            // Grupos
+            'groups-all',
+            'groups-view',
+            'groups-create',
+            'groups-edit',
+            'groups-delete'
         ];
 
         $permissions = array_map(function ($name) {
