@@ -127,8 +127,18 @@ export default [
             layout: 'dashboard',
             permissions: ['places-all', 'places-view'],
         },
-    }
+    },
 
+    {
+        path: '/grupos',
+        name: 'grupos',
+        component: () => import('../pages/Grupo/Grupo.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['permissions-all', 'permissions-view'],
+        },
+    },
     
     /* todlos que se aumento */
 ];

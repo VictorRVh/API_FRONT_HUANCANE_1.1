@@ -109,6 +109,13 @@ const menuItems = [
     route: "sedes",
     permissions: ['places-all', 'places-view'],
   },
+  {
+    name: "Grupos",
+    icon: "UsersIcon",
+    route: "grupos",
+    permissions: ["permissions-all", "permissions-view"],
+  },
+
 ];
 
 // Comprobar permisos
