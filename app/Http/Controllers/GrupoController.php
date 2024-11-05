@@ -10,10 +10,22 @@ class GrupoController extends Controller
 {
     public function index()
     {
-        // Incluye las relaciones asociadas
-        $grupos = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente'])->get();
+        $grupos = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente'])
+            ->get()
+            ->makeHidden(['created_at', 'updated_at']);
+
+        // También oculta los timestamps en las relaciones
+        $grupos->each(function ($grupo) {
+            $grupo->sede->makeHidden(['created_at', 'updated_at']);
+            $grupo->turno->makeHidden(['created_at', 'updated_at']);
+            $grupo->especialidad->makeHidden(['created_at', 'updated_at']);
+            $grupo->plan->makeHidden(['created_at', 'updated_at']);
+            $grupo->docente->makeHidden(['created_at', 'updated_at']);
+        });
+
         return response()->json($grupos, 200);
     }
+
 
     /**
      * Store a newly created resource in storage.

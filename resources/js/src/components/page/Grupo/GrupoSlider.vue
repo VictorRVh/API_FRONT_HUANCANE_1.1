@@ -96,7 +96,8 @@ watch(
   () => props.show,
   (newValue) => {
     if (newValue) {
-      formData.value = initialFormData();
+      // Si `props.group` contiene datos, cargamos esos datos en `formData`
+      formData.value = props.group ? { ...props.group } : initialFormData();
     } else {
       formData.value = initialFormData();
       formErrors.value = {};

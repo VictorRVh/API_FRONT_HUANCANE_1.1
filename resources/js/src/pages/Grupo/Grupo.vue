@@ -67,6 +67,8 @@ const router = useRouter(); // Aquí es donde obtenemos el router
 const roleStore = useRoleStore();
 const groupStore = useGroupsStore();
 
+if (!groupStore.groups.length) await groupStore.loadGroups();
+
 //if (!groupStore.groups.length)
 //  await groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
 
@@ -85,7 +87,7 @@ const onDelete = (group) => {
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
       showToast(`Grupo "${group?.nombre_grupo}" deleted successfully...`);
-      groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
+      groupStore.loadGroups();
       roleStore.loadRoles();
       isUserAuthenticated();
     }
@@ -99,12 +101,7 @@ const SeeMore = (id) => {
   });
 };
 
-const SeeMoreExperiencia = (id) => {
-  router.push({
-    name: "ExperienciaFormativa",
-    params: { idPrograma: id },
-  });
-};
+console.log(groupStore.groups)
 
 // console.log("nuievos Programes: ", groupStore.Programs.programas);
 
@@ -125,13 +122,18 @@ const SeeMoreExperiencia = (id) => {
             <Tr>
               <Th> Id </Th>
               <Th> Grupos </Th>
+              <Th> Sede </Th>
+              <Th> Plan </Th>
+              <Th> Especialidad </Th>
+              <Th> Turno </Th>
+              <Th> Docente </Th>
               <Th> Action </Th>
             </Tr>
           </THead>
 
           <TBody>
             <Tr
-              v-for="grupo in groupStore.groups.grupo"
+              v-for="grupo in groupStore.groups"
               :key="grupo.id_grupo"
             >
               <Td>{{ grupo?.id_grupo }}</Td>
@@ -140,11 +142,35 @@ const SeeMoreExperiencia = (id) => {
                   {{ grupo?.nombre_grupo }}
                 </div>
               </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ grupo?.sede.nombre_sede }}
+                </div>
+              </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ grupo?.plan.nombre_plan }}
+                </div>
+              </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ grupo?.especialidad.nombre_especialidad }}
+                </div>
+              </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ grupo?.turno.nombre_turno }}
+                </div>
+              </Td>
+              <Td>
+                <div class="text-emerald-500 dark:text-emerald-200">
+                  {{ grupo?.docente.name }}
+                </div>
+              </Td>
 
               <Td class="align-middle">
                 <div class="flex flex-row gap-2 justify-center items-center">
                   <ViewButton @click="SeeMore(grupo?.id_grupo)" />
-                  <ViewButton @click="SeeMoreExperiencia(grupo?.id_grupo)" />
                   <EditButton @click="showSlider(true, grupo)" />
                   <DeleteButton @click="onDelete(grupo)" />
                 </div>
