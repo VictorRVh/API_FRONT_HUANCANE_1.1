@@ -91,7 +91,15 @@ class PermissionTableSeeder extends Seeder
             'groups-view',
             'groups-create',
             'groups-edit',
-            'groups-delete'
+            'groups-delete',
+
+            //Matricula estudiante 
+            'enrollmentStudent-all',
+            'enrollmentStudent-view',
+            'enrollmentStudent-create',
+            'enrollmentStudent-edit',
+            'enrollmentStudent-delete',
+
         ];
 
         $permissions = array_map(function ($name) {

@@ -139,6 +139,17 @@ export default [
             permissions: ['groups-all', 'groups-view'],
         },
     },
+
+    {
+        path: '/matricula',
+        name: 'matriculas',
+        component: () => import('../pages/Matricula/Matricula.vue'),
+        props: true, // units-all Esto pasa los parámetros de ruta como props al componente
+        meta: {
+            layout: 'dashboard',
+            permissions: ['enrollmentStudent-all', 'enrollmentStudent-view'],
+        },
+    },
     
     /* todlos que se aumento */
 ];

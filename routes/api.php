@@ -347,22 +347,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('matricula', [
         \App\Http\Controllers\MatriculaController::class,
         'index',
-    ])->middleware('permission:permissions-all|permissions-view');
+    ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-view');
 
     Route::post('matricula', [
         \App\Http\Controllers\MatriculaController::class,
         'store',
-    ])->middleware('permission:permissions-all|permissions-create');
+    ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-create');
 
     Route::patch('matricula/{matriculaId}', [
         \App\Http\Controllers\MatriculaController::class,
         'update',
-    ])->middleware('permission:permissions-all|permissions-edit');
+    ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-edit');
 
     Route::delete('matricula/{matriculaId}', [
         \App\Http\Controllers\MatriculaController::class,
         'destroy',
-    ])->middleware('permission:permissions-all|permissions-delete');
+    ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-delete');
 
 
     // RUTA PARA NOTAS DE UNIDADES DIDACTICAS

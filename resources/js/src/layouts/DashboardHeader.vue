@@ -62,10 +62,10 @@ const menuItems = [
     id: 8
   },
   {
-    name: "Matrícula",
+    name: "Matricula",
     icon: "BookOpenIcon",
-    route: "users",
-    permissions: ["users-all", "users-view"],
+    route: "matriculas",
+    permissions: ["enrollmentStudent-all", "enrollmentStudent-view"],
   },
   {
     name: "Especialidad",
