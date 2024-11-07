@@ -326,6 +326,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'index',
     ])->middleware('permission:groups-all|groups-view');
 
+    Route::get('grupo/{id_plan}/{id_especialidad}', [
+        \App\Http\Controllers\GrupoController::class,
+        'getGruposPorPlanYEspecialidad',
+    ])->middleware('permission:groups-all|groups-view');
+
     Route::post('grupo', [
         \App\Http\Controllers\GrupoController::class,
         'store',

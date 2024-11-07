@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grupo;
+use App\Models\Planes;
+use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -141,5 +143,29 @@ class GrupoController extends Controller
             'message' => 'Grupo eliminado exitosamente',
             'status' => 204,
         ], 204);
+    }
+
+    public function getGruposPorPlanYEspecialidad($id_plan, $id_especialidad)
+    {
+        $grupos = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente'])
+            ->where('id_plan', $id_plan)
+            ->where('id_especialidad', $id_especialidad)
+            ->get()
+            ->makeHidden(['created_at', 'updated_at']);
+
+        if ($grupos->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron grupos para el plan y especialidad especificados'], 404);
+        }
+
+        // Ocultar timestamps en relaciones
+        $grupos->each(function ($grupo) {
+            $grupo->sede->makeHidden(['created_at', 'updated_at']);
+            $grupo->turno->makeHidden(['created_at', 'updated_at']);
+            $grupo->especialidad->makeHidden(['created_at', 'updated_at']);
+            $grupo->plan->makeHidden(['created_at', 'updated_at']);
+            $grupo->docente->makeHidden(['created_at', 'updated_at']);
+        });
+
+        return response()->json($grupos, 200);
     }
 }
