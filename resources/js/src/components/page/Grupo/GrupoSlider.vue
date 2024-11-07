@@ -48,7 +48,13 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  searchId: {
+    type: Array,
+    default: null,
+  },
 });
+
+console.log("legada de los ID: ", props.searchId);
 
 // Emitir eventos
 const emit = defineEmits(["hide"]);
@@ -118,29 +124,35 @@ const initialFormData = () => ({
 */
 //console.log("se imprime en form",props.sedeId)
 
-
-
-const sedeOptions= computed(() => props.sedeId.map(sede => ({
-  name: sede.nombre_sede,
-  id: sede.id_sede,
-})));
+const sedeOptions = computed(() =>
+  props.sedeId.map((sede) => ({
+    name: sede.nombre_sede,
+    id: sede.id_sede,
+  }))
+);
 //const sedeOptions =  ref(sedeO.value); // Ejemplo de opciones
 const turnoOptions = ref([
   { id: 1, name: "Turno Mañana" },
   { id: 2, name: "Turno Tarde" },
 ]);
-const specialtyOptions = computed(() => props.specialtyId.map(specialty => ({
-       name: specialty.nombre_especialidad,
-       id: specialty.id_especialidad,
-})))
-const planOptions = computed(() => props.planId.map(plan => ({
-       name: plan.nombre_plan,
-       id: plan.id_plan,
-})));
-const docenteOptions = computed(() => props.docenteId.map(teacher => ({
-       name: teacher.name,
-       id: teacher.id,
-})));
+const specialtyOptions = computed(() =>
+  props.specialtyId.map((specialty) => ({
+    name: specialty.nombre_especialidad,
+    id: specialty.id_especialidad,
+  }))
+);
+const planOptions = computed(() =>
+  props.planId.map((plan) => ({
+    name: plan.nombre_plan,
+    id: plan.id_plan,
+  }))
+);
+const docenteOptions = computed(() =>
+  props.docenteId.map((teacher) => ({
+    name: teacher.name,
+    id: teacher.id,
+  }))
+);
 
 // Validación de Yup
 const schema = yup.object().shape({
@@ -169,13 +181,7 @@ const onSubmit = async () => {
 
   if (response.grupo?.id_grupo) {
     showToast(`Grupo ${props.group?.id_grupo ? "actualizado" : "creado"} con éxito`);
-    groupStore.loadGroups(
-      props.idSede,
-      props.idTurno,
-      props.idEspecialidad,
-      props.idPlan,
-      props.idDocente
-    );
+    groupStore.loadGroups(props.searchId[0], props.searchId[1]);
     userStore.loadUsers();
     roleStore.loadRoles();
     isUserAuthenticated();

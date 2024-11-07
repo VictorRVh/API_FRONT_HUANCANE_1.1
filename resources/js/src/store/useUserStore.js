@@ -6,6 +6,7 @@ import useHttpRequest from '../composables/useHttpRequest';
 const useUserStore = defineStore('users', () => {
     const {
         index: getUsers,
+      //  show: getUser,
         loading: usersLoading,
         initialLoading: usersFirstTimeLoading,
     } = useHttpRequest('/users');

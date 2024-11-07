@@ -22,8 +22,8 @@ const useGroupsStore = defineStore('Groups', () => {
     };
 
     // Función para cargar todas las Groupaes
-    const loadGroups = async () => {
-        const response = await getGroupsAll()
+    const loadGroups = async (plan, especialty) => {
+        const response = await  getGroups(plan, especialty)
         groups.value = response;
     };
 

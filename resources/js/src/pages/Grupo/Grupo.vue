@@ -25,52 +25,49 @@ import useRoleStore from "../../store/useRoleStore";
 import useAuth from "../../composables/useAuth";
 import GrupoSlider from "../../components/page/Grupo/GrupoSlider.vue";
 
-import useSpecialtyStore from "../../store/Especialidad/useEspecialidadStore"
+import useSpecialtyStore from "../../store/Especialidad/useEspecialidadStore";
 import usePlanStore from "../../store/Especialidad/usePlanFormativoStore";
 import usePlaceStore from "../../store/Sede/useSedeStore";
 
 import useStudentsStore from "../../store/Estudiante/useStudentStore";
 
+import { ref } from "vue"; // Asegúrate de incluir ref
 
 const specialtiesStore = useSpecialtyStore();
-if (!specialtiesStore.specialties.length) await specialtiesStore.loadSpecialties();
-
+if (!specialtiesStore.specialties?.length) await specialtiesStore.loadSpecialties();
 
 const planStore = usePlanStore();
 // planStore.plans.plan
-if (!planStore.plans.length) await planStore.loadPlans();
-
+if (!planStore.plans?.length) await planStore.loadPlans();
 
 const placesStore = usePlaceStore();
-if (!placesStore.Places.length) await placesStore.loadPlaces();
-
+if (!placesStore.Places?.length) await placesStore.loadPlaces();
 
 const userStore = useStudentsStore();
-if (!userStore.students?.length) await userStore.loadStudents('7');
+if (!userStore.students?.length) await userStore.loadStudents("7");
 
-// pruebas de consulta 
-//console.log("grupo demo: ",specialtiesStore.specialties)
-//console.log("grupo demo: ",planStore.plans)
-//console.log("grupo demo: ",placesStore.Places.sedes)
+// pruebas de consulta
 
-//console.log("grupo demo: ",userStore.students)
+const selectedPlan = ref(0);
+if (planStore.plans.length > 0) {
+  selectedPlan.value = planStore.plans[planStore.plans.length - 1].id_plan;
+  //console.log("Plan seleccionado por defecto:", selectedPlan.value);
+}
 
+const selectSpecialties = ref(0);
 
-// Acceder al parámetro de la ruta
-
-// Ahora puedes usar `idEspecialidad` en tu componente
-//console.log("ruta s", props.idEspecialidad);
-
+if (specialtiesStore.specialties.length > 0) {
+  selectSpecialties.value =
+    specialtiesStore.specialties[specialtiesStore.specialties.length - 1].id_especialidad;
+  console.log("Especilidad seleccionado por defecto:", selectSpecialties.value);
+}
 // Cargar la especialidad correspondiente cuando se monta el componente
 
 const router = useRouter(); // Aquí es donde obtenemos el router
 const roleStore = useRoleStore();
 const groupStore = useGroupsStore();
 
-if (!groupStore.groups.length) await groupStore.loadGroups();
-
-//if (!groupStore.groups.length)
-//  await groupStore.loadGroups(props.idSede, props.idTurno, props.idEspecialidad, props.idPlan, props.idDocente);
+if (!groupStore.groups?.length) await groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("group-crud");
 const { showConfirmModal, showToast } = useModalToast();
@@ -87,7 +84,7 @@ const onDelete = (group) => {
     console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
       showToast(`Grupo "${group?.nombre_grupo}" deleted successfully...`);
-      groupStore.loadGroups();
+      groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
       roleStore.loadRoles();
       isUserAuthenticated();
     }
@@ -101,11 +98,16 @@ const SeeMore = (id) => {
   });
 };
 
-console.log(groupStore.groups)
+//console.log(groupStore.groups);
 
 // console.log("nuievos Programes: ", groupStore.Programs.programas);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
+const changePlan = () =>{
+    groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
+}
+
+
 </script>
 
 <template>
@@ -115,6 +117,32 @@ console.log(groupStore.groups)
         <h2 class="text-active font-bold text-2xl">{{}} / Grupos</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
+
+      <!-- selecionar Periodo Academico-->
+      <div class="flex justify-between">
+        <select id="plan-select" @change="changePlan()" v-model="selectedPlan" class="border rounded-md p-2">
+          <option value="" disabled>Select a plan</option>
+          <option
+            v-for="plan in planStore.plans"
+            :key="plan.id_plan"
+            :value="plan.id_plan"
+          >
+            {{ plan.nombre_plan }}
+          </option>
+        </select>
+
+      <!-- selecionar especialidad-->
+        <select id="plan-select"  @change="changePlan()" v-model="selectSpecialties" class="border rounded-md p-2">
+          <option value="" disabled>Select a plan</option>
+          <option
+            v-for="specialty in specialtiesStore.specialties"
+            :key="specialty.id_especialidad"
+            :value="specialty.id_especialidad"
+          >
+            {{ specialty.nombre_especialidad }}
+          </option>
+        </select>
+      </div>      
 
       <div class="w-full">
         <Table>
@@ -132,10 +160,7 @@ console.log(groupStore.groups)
           </THead>
 
           <TBody>
-            <Tr
-              v-for="grupo in groupStore.groups"
-              :key="grupo.id_grupo"
-            >
+            <Tr v-for="grupo in groupStore.groups" :key="grupo.id_grupo">
               <Td>{{ grupo?.id_grupo }}</Td>
               <Td>
                 <div class="text-emerald-500 dark:text-emerald-200">
@@ -183,12 +208,13 @@ console.log(groupStore.groups)
 
     <GrupoSlider
       :sedeId="placesStore.Places.sedes"
-      :turnoId="['M','T','N']"
+      :turnoId="['M', 'T', 'N']"
       :specialtyId="specialtiesStore.specialties"
       :planId="planStore.plans"
       :docenteId="userStore.students"
       :show="slider"
       :group="sliderData"
+      :searchId = "[selectedPlan,selectSpecialties]"
       @hide="hideSlider"
     />
   </AuthorizationFallback>

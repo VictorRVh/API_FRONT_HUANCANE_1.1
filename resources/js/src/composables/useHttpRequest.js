@@ -71,7 +71,7 @@ const useHttpRequest = (path = '') => {
     const store = async (data, callback = null) => {
         try {
 
-            console.log(data)
+           // console.log(data)
             saving.value = true;
             const response = await axios.post(path, data);
             saving.value = false;

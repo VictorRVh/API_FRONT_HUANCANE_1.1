@@ -7,11 +7,11 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
     // Importamos las funciones necesarias de useHttpRequest
     const {
         index: getEnrollmentStudents,
-        //show: getEnrollmentById, // Añadimos el método show para obtener una especialidad por ID
+        show: getEnrollmentById, // Añadimos el método show para obtener una especialidad por ID
         //show: getEnrollmentStudents,
         loading: EnrollmentStudentsLoading,
         initialLoading: EnrollmentStudentsFirstTimeLoading,
-    } = useHttpRequest('/unidad_didactica');
+    } = useHttpRequest('/matricula');
 
     const Enrollment = ref(null); // Para almacenar una sola especialidad
     const EnrollmentStudents = ref([]);  // Para almacenar la lista de especialidades
@@ -31,7 +31,12 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
     const loadEnrollmentById = async (id) => {
         const response = await getEnrollmentById(id); // Usamos el método show
         Enrollment.value = response;
+       // console.log("Store: ",response)
     };
+    const loadUser = async () =>{
+        const response = await getUserDni();
+        users.value = response;
+    }
 
     return {
         Enrollment,
