@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Matricula;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -112,5 +113,18 @@ class MatriculaController extends Controller
             'message' => 'Matricula eliminada exitosamente',
             'status' => 204
         ], 204);
+    }
+
+    public function getStudentById($dni)
+    {
+        $user = User::where('dni', $dni)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Estudiante no encontrado'], 404);
+        }
+
+        $user->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json($user, 200);
     }
 }
