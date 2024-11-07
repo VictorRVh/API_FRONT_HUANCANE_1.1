@@ -117,7 +117,11 @@ class MatriculaController extends Controller
 
     public function getStudentById($dni)
     {
-        $user = User::where('dni', $dni)->first();
+        $user = User::where('dni', $dni)
+            ->whereHas('roles', function ($query) {
+                $query->where('role_id', 8);
+            })
+            ->first();
 
         if (!$user) {
             return response()->json(['message' => 'Estudiante no encontrado'], 404);
