@@ -129,6 +129,7 @@ class MatriculaController extends Controller
 
         $user->makeHidden(['created_at', 'updated_at']);
 
-        return response()->json($user, 200);
+        // Retornar el usuario dentro de un array
+        return response()->json([$user], 200);
     }
 }
