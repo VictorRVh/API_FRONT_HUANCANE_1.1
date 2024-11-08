@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import Table from "../../components/table/Table.vue";
 import THead from "../../components/table/THead.vue";
@@ -22,10 +22,14 @@ import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
 import useAuth from "../../composables/useAuth";
 
+import useGroupsStore from "../../store/Grupo/useGrupoStore";
+
 const router = useRouter();
 const enrollmentStore = useEnrollmentStudentsStore();
 const specialtiesStore = useSpecialtyStore();
 const planStore = usePlanStore();
+const groupStore = useGroupsStore();
+
 const { slider, sliderData, showSlider, hideSlider } = useSlider("enrollment-crud");
 const { showConfirmModal, showToast } = useModalToast();
 const { destroy: deleteEnrollment, deleting } = useHttpRequest("/matricula");
@@ -33,6 +37,7 @@ const { isUserAuthenticated } = useAuth();
 
 const selectedPlan = ref(0);
 const selectedSpecialty = ref(0);
+const selectedGroup = ref(0);
 
 onMounted(async () => {
   if (!specialtiesStore.specialties?.length) await specialtiesStore.loadSpecialties();
@@ -41,13 +46,14 @@ onMounted(async () => {
   // Set default values
   selectedPlan.value = planStore.plans[0]?.id_plan || 0;
   selectedSpecialty.value = specialtiesStore.specialties[0]?.id_especialidad || 0;
+  selectedGroup.value = groupStore.groups[0]?.id_grupo || 0;
 
   // Load enrollments
   await loadEnrollments();
 });
 
 const loadEnrollments = async () => {
-  await enrollmentStore.loadEnrollmentBySpecialties(selectedPlan.value, selectedSpecialty.value);
+  await enrollmentStore.loadEnrollmentBySpecialtiesAndGroup(selectedPlan.value, selectedSpecialty.value,selectedGroup.value);
 };
 
 const onDelete = async (enrollment) => {
@@ -71,9 +77,15 @@ const SeeMore = (id) => {
 
 const onPlanOrSpecialtyChange = () => {
   loadEnrollments();
+  //selectedGroup.value = groupStore.groups[0]?.id_grupo || 0;
 };
 
-console.log("matrícula: ",enrollmentStore.Enrollment)
+
+
+watch([selectedPlan, selectedSpecialty], ([newPlan, newSpecialty]) => {
+  groupStore?.loadGroups(newPlan, newSpecialty);
+  console.log("matrícula: ",enrollmentStore.EnrollmentGroup)
+});
 
 </script>
 
@@ -90,6 +102,13 @@ console.log("matrícula: ",enrollmentStore.Enrollment)
           <option disabled value="0">Select a plan</option>
           <option v-for="plan in planStore.plans" :key="plan.id_plan" :value="plan.id_plan">
             {{ plan.nombre_plan }}
+          </option>
+        </select>
+
+        <select v-model="selectedGroup" @change="onPlanOrSpecialtyChange" class="border rounded-md p-2">
+          <option disabled value="0">Select a group</option>
+          <option v-for="grupo in groupStore.groups" :key="grupo.id_grupo" :value="grupo.id_grupo">
+            {{ grupo.nombre_grupo }}
           </option>
         </select>
 
@@ -115,7 +134,7 @@ console.log("matrícula: ",enrollmentStore.Enrollment)
           </THead>
 
           <TBody>
-            <Tr v-for="enrollment in enrollmentStore.Enrollment" :key="enrollment.id_Enrollment">
+            <Tr v-for="enrollment in enrollmentStore.EnrollmentGroup" :key="enrollment.id_Enrollment">
               <Td>{{ enrollment?.id_matricula }}</Td>
               <Td>{{ enrollment.estudiante?.name }}</Td>
               <Td>{{ enrollment.estudiante?.apellido_paterno }} {{ enrollment.estudiante?.apellido_materno }}</Td>

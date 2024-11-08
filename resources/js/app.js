@@ -14,10 +14,8 @@ import 'vue-toastification/dist/index.css';
 import focus from './src/directives/focus';
 
 import {registerHeroIcons} from '../js/src/icons/heroicons';
-
 const app = createApp(App);
 const pinia = createPinia();
-
 registerHeroIcons(app);
 
 app.use(pinia)

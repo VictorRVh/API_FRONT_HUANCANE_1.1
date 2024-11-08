@@ -9,6 +9,7 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
         index: getEnrollmentStudentsAll,
         show: getEnrollmentById, // Añadimos el método show para obtener una especialidad por ID
         showTwo: getEnrollmentStudents,
+        showThree: getEnrollmentSudentsByGroup,
         loading: EnrollmentStudentsLoading,
         initialLoading: EnrollmentStudentsFirstTimeLoading,
     } = useHttpRequest('/matricula');
@@ -16,6 +17,7 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
     const Enrollment = ref(null); // Para almacenar una sola especialidad
     const EnrollmentDni = ref(null); // Para almacenar un estudiante matriculado
     const EnrollmentStudents = ref([]);  // Para almacenar la lista de especialidades
+    const EnrollmentGroup = ref(null);
 
     // Función para establecer una especialidad específica
     const setEnrollment = (authEnrollment) => {
@@ -39,6 +41,11 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
         Enrollment.value = response;
        // console.log("Store: ",response)
     };
+    const loadEnrollmentBySpecialtiesAndGroup = async (plan,specialty,group) => {
+        const response = await getEnrollmentSudentsByGroup(plan,specialty,group); // Usamos el método show
+        EnrollmentGroup.value = response;
+       // console.log("Store: ",response)
+    };
     const loadUser = async () =>{
         const response = await getUserDni();
         users.value = response;
@@ -48,11 +55,13 @@ const useEnrollmentStudentsStore = defineStore('EnrollmentStudents', () => {
         Enrollment,
         EnrollmentDni,
         setEnrollment,
+        EnrollmentGroup,
         EnrollmentStudents,
         EnrollmentStudentsLoading,
         EnrollmentStudentsFirstTimeLoading,
         loadEnrollmentStudents,
         loadEnrollmentBySpecialties,
+        loadEnrollmentBySpecialtiesAndGroup,
         loadEnrollmentById, // Retornamos la nueva función para obtener una especialidad por ID
     };
 });
