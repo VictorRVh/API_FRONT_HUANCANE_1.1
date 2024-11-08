@@ -73,19 +73,19 @@ const title = computed(() =>
 
 // Inicialización del formulario y opciones
 const specialtyOptions = computed(() =>
-  props.specialtyId.map(specialty => ({
+  props.specialtyId?.map(specialty => ({
     name: specialty.nombre_especialidad,
     id: specialty.id_especialidad,
   }))
 );
 const planOptions = computed(() =>
-  props.planId.map(plan => ({
+  props.planId?.map(plan => ({
     name: plan.nombre_plan,
     id: plan.id_plan,
   }))
 );
 const groupOptions = computed(() =>
-  groupStore.groups.map(group => ({
+  groupStore.groups?.map(group => ({
     name: group.nombre_grupo,
     id: group.id_grupo,
   }))
@@ -105,8 +105,8 @@ const searchStudentByDNI = async () => {
       await EnrollmentStore.loadEnrollmentById(searchQuery.value);
       
       // Verificar si se encontraron estudiantes
-      if (EnrollmentStore.Enrollment && EnrollmentStore.Enrollment.length > 0) {
-        studentOptions.value = EnrollmentStore.Enrollment.map(student => ({
+      if (EnrollmentStore?.EnrollmentDni && EnrollmentStore.EnrollmentDni?.length > 0) {
+        studentOptions.value = EnrollmentStore?.EnrollmentDni.map(student => ({
           id: student.id,
           name: `${student.name} ${student.apellido_paterno}`,
         }));
@@ -139,14 +139,15 @@ const onSubmit = async () => {
     ? await updateEnrollment(props.Enrollment?.id_matricula, data)
     : await createEnrollment(data);
   
-    console.log("hola a todos",response.matricula?.id_matricula)
+    //console.log("hola a todos",response.matricula?.id_matricula)
 
   if (response.matricula?.id_matricula) {
     showToast(`Matrícula ${props.Enrollment?.id_matricula ? "actualizado" : "creado"} con éxito`);
-    EnrollmentStore.loadGroups(props.searchId[0], props.searchId[1]);
+    EnrollmentStore.loadEnrollmentBySpecialties(props.searchId[0], props.searchId[1]);
     //roleStore.loadRoles();
     isUserAuthenticated();
     emit("hide");
+    consola.log("paso hide")
   } else {
     showToast("Error al guardar el matrícula. Inténtalo de nuevo.", "error");
   }

@@ -68,6 +68,24 @@ const useHttpRequest = (path = '') => {
             return handleError(error, null, callback);
         }
     };
+    const showThree = async (idOne, idTwo,idThree, callback = null) => {
+        try {
+            loading.value = true;
+            const response = await axios.get(`${path}/${idOne}/${idTwo}/${idThree}`);
+            loading.value = false;
+
+            if (typeof callback === 'function') {
+                callback(null, response);
+            }
+            if (response.data) {
+                return response.data;
+            }
+            return null;
+        } catch (error) {
+            loading.value = false;
+            return handleError(error, null, callback);
+        }
+    };
     const store = async (data, callback = null) => {
         try {
 
@@ -182,6 +200,7 @@ const useHttpRequest = (path = '') => {
         index,
         show,
         showTwo,
+        showThree,
         store,
         update,
         destroy,

@@ -73,7 +73,7 @@ const { showToast } = useModalToast();
 const { isUserAuthenticated } = useAuth();
 
 // Computed para manejar permisos
-const requiredSpecialties = computed(() => {
+const requiredGroup = computed(() => {
   return props.group?.id_grupo
     ? ["groups-all", "groups-edit"]
     : ["groups-all", "groups-create"];
@@ -111,18 +111,6 @@ watch(
   }
 );
 
-// Opciones de selección para cada campo
-/*
-const initialFormData = () => ({
-  nombre_grupo: props.group?.nombre_grupo || null,
-  id_sede: props.sedeId || null,
-  id_turno: props.turnoId || null,
-  id_especialidad: props.specialtyId || null,
-  id_plan: props.planId || null,
-  id_docente: props.docenteId || null,
-});
-*/
-//console.log("se imprime en form",props.sedeId)
 
 const sedeOptions = computed(() =>
   props.sedeId.map((sede) => ({
@@ -182,8 +170,7 @@ const onSubmit = async () => {
   if (response.grupo?.id_grupo) {
     showToast(`Grupo ${props.group?.id_grupo ? "actualizado" : "creado"} con éxito`);
     groupStore.loadGroups(props.searchId[0], props.searchId[1]);
-    userStore.loadUsers();
-    roleStore.loadRoles();
+    //roleStore.loadRoles();
     isUserAuthenticated();
     emit("hide");
   } else {
@@ -194,7 +181,7 @@ const onSubmit = async () => {
 
 <template>
   <Slider :show="show" :title="title" @hide="emit('hide')">
-    <AuthorizationFallback :permissions="requiredSpecialties">
+    <AuthorizationFallback :permissions="requiredGroup">
       <div class="mt-4 space-y-4">
         <FormInput
           v-model="formData.nombre_grupo"

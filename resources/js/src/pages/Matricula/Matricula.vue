@@ -26,7 +26,7 @@ const router = useRouter();
 const enrollmentStore = useEnrollmentStudentsStore();
 const specialtiesStore = useSpecialtyStore();
 const planStore = usePlanStore();
-const { slider, sliderData, showSlider, hideSlider } = useSlider("group-crud");
+const { slider, sliderData, showSlider, hideSlider } = useSlider("enrollment-crud");
 const { showConfirmModal, showToast } = useModalToast();
 const { destroy: deleteEnrollment, deleting } = useHttpRequest("/matricula");
 const { isUserAuthenticated } = useAuth();
@@ -47,7 +47,7 @@ onMounted(async () => {
 });
 
 const loadEnrollments = async () => {
-  await enrollmentStore.loadEnrollmentStudents(selectedPlan.value, selectedSpecialty.value);
+  await enrollmentStore.loadEnrollmentBySpecialties(selectedPlan.value, selectedSpecialty.value);
 };
 
 const onDelete = async (enrollment) => {
@@ -72,6 +72,9 @@ const SeeMore = (id) => {
 const onPlanOrSpecialtyChange = () => {
   loadEnrollments();
 };
+
+console.log("matrícula: ",enrollmentStore.Enrollment)
+
 </script>
 
 <template>
@@ -103,28 +106,24 @@ const onPlanOrSpecialtyChange = () => {
           <THead>
             <Tr>
               <Th>Id</Th>
-              <Th>Enrollment</Th>
-              <Th>Sede</Th>
-              <Th>Plan</Th>
-              <Th>Specialty</Th>
-              <Th>Turno</Th>
-              <Th>Docente</Th>
+              <Th>Nombre</Th>
+              <Th>Apellidos</Th>
+              <Th>DNI</Th>
+              <Th>Grupo</Th>
               <Th>Action</Th>
             </Tr>
           </THead>
 
           <TBody>
-            <Tr v-for="enrollment in enrollmentStore.EnrollmentStudent" :key="enrollment.id_Enrollment">
-              <Td>{{ enrollment?.id_Enrollment }}</Td>
-              <Td>{{ enrollment?.nombre_Enrollment }}</Td>
-              <Td>{{ enrollment?.sede.nombre_sede }}</Td>
-              <Td>{{ enrollment?.plan.nombre_plan }}</Td>
-              <Td>{{ enrollment?.especialidad.nombre_especialidad }}</Td>
-              <Td>{{ enrollment?.turno.nombre_turno }}</Td>
-              <Td>{{ enrollment?.docente.name }}</Td>
+            <Tr v-for="enrollment in enrollmentStore.Enrollment" :key="enrollment.id_Enrollment">
+              <Td>{{ enrollment?.id_matricula }}</Td>
+              <Td>{{ enrollment.estudiante?.name }}</Td>
+              <Td>{{ enrollment.estudiante?.apellido_paterno }} {{ enrollment.estudiante?.apellido_materno }}</Td>
+              <Td>{{ enrollment.estudiante?.dni }}</Td>
+              <Td>{{ enrollment.grupos?.nombre_grupo}}</Td>
               <Td>
                 <div class="flex gap-2 justify-center items-center">
-                  <ViewButton @click="SeeMore(enrollment.id_Enrollment)" />
+                  <ViewButton @click="SeeMore(enrollment.id_matricula)" />
                   <EditButton @click="showSlider(true, enrollment)" />
                   <DeleteButton @click="onDelete(enrollment)" />
                 </div>
