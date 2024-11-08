@@ -22,7 +22,8 @@ class Matricula extends Model
         return $this->belongsTo(Grupo::class, 'id_grupo', 'id_grupo');
     }
 
-    public function usuario()
+    // ESTAS FUNCIONES SON IMPORTANTES PARA REALIZAR CONSULTAS EN LOS CONTROLADORES DE LAS TABLAS REFERENCIADAS
+    public function estudiante()
     {
         return $this->belongsTo(User::class, 'id_estudiante', 'id');
     }

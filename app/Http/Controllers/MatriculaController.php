@@ -38,6 +38,7 @@ class MatriculaController extends Controller
         ]);
 
         return response()->json([
+            'message' => 'Matricula creada exitosamente',
             'matricula' => $matricula,
             'status' => 201
         ], 201);
@@ -131,5 +132,30 @@ class MatriculaController extends Controller
 
         // Retornar el usuario dentro de un array
         return response()->json([$user], 200);
+    }
+
+    public function getMatriculaPorPlanYEspecialidad($id_plan, $id_especialidad)
+    {
+        $matriculas = Matricula::with(['estudiante', 'grupos']) // Estos son datos de las funciones delos modelos
+            ->whereHas('grupos', function ($query) use ($id_plan, $id_especialidad) {
+                $query->where('id_plan', $id_plan)
+                    ->where('id_especialidad', $id_especialidad);
+            })
+            ->get();
+
+        $matriculas->each(function ($matricula) {
+            $matricula->makeHidden(['created_at', 'updated_at']);
+
+            if ($matricula->estudiante) { // Verifica si existe la relación antes de ocultar
+                $matricula->estudiante->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($matricula->grupos) { // Verifica si existe la relación antes de ocultar
+                $matricula->grupos->makeHidden(['created_at', 'updated_at']);
+            }
+        });
+
+        return response()->json($matriculas, 200);
+
     }
 }

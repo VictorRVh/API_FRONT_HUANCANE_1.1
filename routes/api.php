@@ -359,6 +359,11 @@ Route::middleware('auth:sanctum')->group(function () {
         'getStudentById',
     ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-view');
 
+    Route::get('matricula/{id_plan}/{id_especialidad}', [
+        \App\Http\Controllers\MatriculaController::class,
+        'getMatriculaPorPlanYEspecialidad',
+    ])->middleware('permission:enrollmentStudent-all|enrollmentStudent-view');
+
     Route::post('matricula', [
         \App\Http\Controllers\MatriculaController::class,
         'store',
