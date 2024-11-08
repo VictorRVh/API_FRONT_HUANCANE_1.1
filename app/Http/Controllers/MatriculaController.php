@@ -156,6 +156,34 @@ class MatriculaController extends Controller
         });
 
         return response()->json($matriculas, 200);
+    }
 
+    public function getMatriculasPorPlanEspecialidadAndGrupo($id_plan, $id_especialidad, $id_grupo)
+    {
+        $matriculas = Matricula::with(['estudiante', 'grupos'])
+            ->whereHas('grupos', function ($query) use ($id_plan, $id_especialidad, $id_grupo) {
+                $query->where('id_plan', $id_plan)
+                    ->where('id_especialidad', $id_especialidad);
+
+                if ($id_grupo) {
+                    $query->where('id_grupo', $id_grupo); // Filtra por grupo si se proporciona
+                }
+            })
+            ->get();
+
+        // Oculta los timestamps de los resultados
+        $matriculas->each(function ($matricula) {
+            $matricula->makeHidden(['created_at', 'updated_at']);
+
+            if ($matricula->estudiante) {
+                $matricula->estudiante->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($matricula->grupos) {
+                $matricula->grupos->makeHidden(['created_at', 'updated_at']);
+            }
+        });
+
+        return response()->json($matriculas, 200);
     }
 }
