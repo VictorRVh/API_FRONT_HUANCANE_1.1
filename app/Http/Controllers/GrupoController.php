@@ -22,6 +22,7 @@ class GrupoController extends Controller
             $grupo->turno->makeHidden(['created_at', 'updated_at']);
             $grupo->especialidad->makeHidden(['created_at', 'updated_at']);
             $grupo->plan->makeHidden(['created_at', 'updated_at']);
+            $grupo->programa->makeHidden(['created_at', 'updated_at']);
             $grupo->docente->makeHidden(['created_at', 'updated_at']);
         });
 
@@ -41,6 +42,7 @@ class GrupoController extends Controller
             'id_turno' => 'required|exists:turnos,id',
             'id_especialidad' => 'required|exists:especialidades,id_especialidad',
             'id_plan' => 'required|exists:planes,id_plan',
+            'id_programa' => 'required|exists:programas,id_programa',
             'id_docente' => 'required|exists:users,id',
         ]);
 
@@ -68,7 +70,7 @@ class GrupoController extends Controller
     public function show($id)
     {
         // Incluye las relaciones asociadas
-        $grupo = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente'])->find($id);
+        $grupo = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'programa', 'docente'])->find($id);
 
         if (!$grupo) {
             return response()->json([
@@ -101,6 +103,7 @@ class GrupoController extends Controller
             'id_turno' => 'exists:turnos,id',
             'id_especialidad' => 'exists:especialidades,id_especialidad',
             'id_plan' => 'exists:planes,id_plan',
+            'id_programa' => 'required|exists:programas,id_programa',
             'id_docente' => 'exists:users,id',
         ]);
 
@@ -147,7 +150,7 @@ class GrupoController extends Controller
 
     public function getGruposPorPlanYEspecialidad($id_plan, $id_especialidad)
     {
-        $grupos = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente'])
+        $grupos = Grupo::with(['sede', 'turno', 'especialidad', 'plan', 'docente', 'programa'])
             ->where('id_plan', $id_plan)
             ->where('id_especialidad', $id_especialidad)
             ->get()
@@ -163,6 +166,7 @@ class GrupoController extends Controller
             $grupo->turno->makeHidden(['created_at', 'updated_at']);
             $grupo->especialidad->makeHidden(['created_at', 'updated_at']);
             $grupo->plan->makeHidden(['created_at', 'updated_at']);
+            $grupo->programa->makeHidden(['created_at', 'updated_at']);
             $grupo->docente->makeHidden(['created_at', 'updated_at']);
         });
 

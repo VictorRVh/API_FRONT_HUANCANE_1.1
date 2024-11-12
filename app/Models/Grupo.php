@@ -19,6 +19,7 @@ class Grupo extends Model
         'id_turno',
         'id_especialidad',
         'id_plan',
+        'id_programa',
         'id_docente',
     ];
 
@@ -40,6 +41,11 @@ class Grupo extends Model
     public function plan()
     {
         return $this->belongsTo(Planes::class, 'id_plan', 'id_plan');
+    }
+
+    public function programa()
+    {
+        return $this->belongsTo(Programa::class, 'id_programa');
     }
 
     public function docente()

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('id_turno')->constrained('turnos', 'id')->onDelete('cascade');
             $table->foreignId('id_especialidad')->constrained('especialidades', 'id_especialidad')->onDelete('cascade');
             $table->foreignId('id_plan')->constrained('planes', 'id_plan')->onDelete('cascade');
+            $table->foreignId('id_programa')->constrained('programas', 'id_programa')->onDelete('cascade');
             $table->unsignedBigInteger('id_docente'); // Clave foránea
             $table->foreign('id_docente')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
