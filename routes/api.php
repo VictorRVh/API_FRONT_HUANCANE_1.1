@@ -331,6 +331,20 @@ Route::middleware('auth:sanctum')->group(function () {
         'getGruposPorPlanYEspecialidad',
     ])->middleware('permission:groups-all|groups-view');
 
+    //RUTA DE GRUPO POR DOCENTE Y PLAN
+
+    Route::get('grupoDocente/{usuario_id}/{plan_id}', [
+        \App\Http\Controllers\GrupoController::class,
+        'getGruposPorUsuarioYPlan',
+    ])->middleware('permission:groups-all|groups-view');
+    
+    //RUTA DE ESTUDIANTE POR GRUPO Y DOCENTE 
+
+    Route::get('grupoEstudiante/{docente_id}/{grupo_id}', [
+        \App\Http\Controllers\GrupoController::class,
+        'getAlumnosPorGrupoYDocente',
+    ])->middleware('permission:groups-all|groups-view');
+
     Route::post('grupo', [
         \App\Http\Controllers\GrupoController::class,
         'store',
