@@ -12,6 +12,7 @@ import useUserStore from "../../../store/useUserStore";
 import useRoleStore from "../../../store/useRoleStore";
 
 import useGroupsStore from "../../../store/Grupo/useGrupoStore";
+import useProgramStore from "../../../store/Especialidad/useProgramaStore";
 
 import useValidation from "../../../composables/useValidation";
 import useHttpRequest from "../../../composables/useHttpRequest";
@@ -64,6 +65,10 @@ const userStore = useUserStore();
 const roleStore = useRoleStore();
 const groupStore = useGroupsStore();
 
+const ProgramStore = useProgramStore();
+
+// ProgramStore.Programs.Program
+
 // Composables
 const { store: createGroup, saving, update: updateGroup, updating } = useHttpRequest(
   "/grupo"
@@ -92,10 +97,13 @@ const initialFormData = () => ({
   id_especialidad: null,
   id_plan: null,
   id_docente: null,
+  id_programa: null,
 });
 
 const formData = ref(initialFormData());
 const formErrors = ref({});
+
+const programOptions = ref([]);
 
 // Función para restablecer el formulario al abrir el modal
 watch(
@@ -110,7 +118,6 @@ watch(
     }
   }
 );
-
 
 const sedeOptions = computed(() =>
   props.sedeId.map((sede) => ({
@@ -177,6 +184,38 @@ const onSubmit = async () => {
     showToast("Error al guardar el grupo. Inténtalo de nuevo.", "error");
   }
 };
+
+watch(
+  [() => formData.value.id_especialidad, () => formData.value.id_plan],
+  async ([especialidadId, planId]) => {
+    // console.log("Datos actualizados:", especialidadId, planId);
+
+    if (especialidadId && planId) {
+      try {
+        await ProgramStore.loadPrograms(especialidadId, planId);
+
+        // Actualiza las opciones de programa
+        programOptions.value = ProgramStore.Programs?.programas.map(programa => ({
+          name: programa.nombre_programa,
+          id: programa.id_programa
+        })) || [];
+
+        // Asigna automáticamente el primer programa si hay alguno disponible
+        if (programOptions.value.length > 0) {
+          formData.value.id_programa = programOptions.value[0].id;
+          selectedProgramName.value = programOptions.value[0].name; // Guarda el nombre para mostrarlo
+        } else {
+          formData.value.id_programa = null;
+          selectedProgramName.value = "";
+        }
+
+        console.log("Opciones de programas cargadas:", programOptions.value);
+      } catch (error) {
+        console.error("Error al cargar los programas:", error);
+      }
+    }
+  }
+);
 </script>
 
 <template>
@@ -228,6 +267,17 @@ const onSubmit = async () => {
             label="name"
             :reduce="(option) => option.id"
             :error="formErrors?.id_plan"
+          />
+        </FormLabelError>
+
+        <FormLabelError label="Selecciona el programa">
+          <VSelect
+            v-model="formData.id_programa"
+            :options="programOptions"
+            label="name"
+            :reduce="(option) => option.id"
+            :error="formErrors?.id_programa"
+            disabled
           />
         </FormLabelError>
 

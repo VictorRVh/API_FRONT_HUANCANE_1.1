@@ -21,7 +21,7 @@ import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
 
 import useRoleStore from "../../store/useRoleStore";
-//import useUserStore from "../../store/useUserStore";
+
 import useAuth from "../../composables/useAuth";
 import GrupoSlider from "../../components/page/Grupo/GrupoSlider.vue";
 
@@ -33,18 +33,39 @@ import useStudentsStore from "../../store/Estudiante/useStudentStore";
 
 import { ref } from "vue"; // Asegúrate de incluir ref
 
-const specialtiesStore = useSpecialtyStore();
-if (!specialtiesStore.specialties?.length) await specialtiesStore.loadSpecialties();
+
+
+const roleStore = useRoleStore();
+console.log("Roles victor: ",roleStore.role[0].id)
+
+let specialtiesStore;
+let userStore;
+let placesStore;
+
+const selectSpecialties = ref(0);
+
+
+if (roleStore.role[0].id) {
+  specialtiesStore = useSpecialtyStore();
+  if (!specialtiesStore.specialties?.length) await specialtiesStore.loadSpecialties();
+  placesStore = usePlaceStore();
+  if (!placesStore.Places?.length) await placesStore.loadPlaces();
+  userStore = useStudentsStore();
+  if (!userStore.students?.length) await userStore.loadStudents("7");
+
+  if (specialtiesStore.specialties.length > 0) {
+    selectSpecialties.value =
+      specialtiesStore.specialties[
+        specialtiesStore.specialties.length - 1
+      ].id_especialidad;
+    // console.log("Especilidad seleccionado por defecto:", selectSpecialties.value);
+  }
+  // Cargar la especialidad correspondiente cuando se monta el componente
+}
 
 const planStore = usePlanStore();
 // planStore.plans.plan
 if (!planStore.plans?.length) await planStore.loadPlans();
-
-const placesStore = usePlaceStore();
-if (!placesStore.Places?.length) await placesStore.loadPlaces();
-
-const userStore = useStudentsStore();
-if (!userStore.students?.length) await userStore.loadStudents("7");
 
 // pruebas de consulta
 
@@ -54,20 +75,13 @@ if (planStore.plans.length > 0) {
   //console.log("Plan seleccionado por defecto:", selectedPlan.value);
 }
 
-const selectSpecialties = ref(0);
-
-if (specialtiesStore.specialties.length > 0) {
-  selectSpecialties.value =
-    specialtiesStore.specialties[specialtiesStore.specialties.length - 1].id_especialidad;
-  console.log("Especilidad seleccionado por defecto:", selectSpecialties.value);
-}
-// Cargar la especialidad correspondiente cuando se monta el componente
-
 const router = useRouter(); // Aquí es donde obtenemos el router
-const roleStore = useRoleStore();
+
 const groupStore = useGroupsStore();
 
-if (!groupStore.groups?.length) await groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
+
+if (!groupStore.groups?.length)
+  await groupStore.loadGroups(selectedPlan.value, selectSpecialties.value);
 
 const { slider, sliderData, showSlider, hideSlider } = useSlider("group-crud");
 const { showConfirmModal, showToast } = useModalToast();
@@ -81,10 +95,10 @@ const onDelete = (group) => {
     if (!confirmed) return;
 
     const isDeleted = await deleteSpecialy(group?.id_grupo);
-    console.log("pasod eleinar  cosmlas: ", isDeleted);
+    // console.log("pasod eleinar  cosmlas: ", isDeleted);
     if (isDeleted) {
       showToast(`Grupo "${group?.nombre_grupo}" deleted successfully...`);
-      groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
+      groupStore.loadGroups(selectedPlan.value, selectSpecialties.value);
       roleStore.loadRoles();
       isUserAuthenticated();
     }
@@ -100,14 +114,13 @@ const SeeMore = (id) => {
 
 //console.log(groupStore.groups);
 
-// console.log("nuievos Programes: ", groupStore.Programs.programas);
+//console.log("nuievos Programes: ", groupStore);
 
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
-const changePlan = () =>{
-    groupStore.loadGroups(selectedPlan.value,selectSpecialties.value);
-}
-
-
+const changePlan = () => {
+  groupStore.loadGroups(selectedPlan.value, selectSpecialties.value);
+  //console.log("usuario rol : ", userStoreOne.user.roles[0].id);
+};
 </script>
 
 <template>
@@ -120,7 +133,12 @@ const changePlan = () =>{
 
       <!-- selecionar Periodo Academico-->
       <div class="flex justify-between">
-        <select id="plan-select" @change="changePlan()" v-model="selectedPlan" class="border rounded-md p-2">
+        <select
+          id="plan-select"
+          @change="changePlan()"
+          v-model="selectedPlan"
+          class="border rounded-md p-2"
+        >
           <option value="" disabled>Select a plan</option>
           <option
             v-for="plan in planStore.plans"
@@ -131,9 +149,15 @@ const changePlan = () =>{
           </option>
         </select>
 
-      <!-- selecionar especialidad-->
-        <select id="plan-select"  @change="changePlan()" v-model="selectSpecialties" class="border rounded-md p-2">
-          <option value="" disabled>Select a plan</option>
+        <!-- selecionar especialidad v-if="userStoreOne.user.roles.id===7" -->
+
+        <select
+          id="plan-select"
+          @change="changePlan()"
+          v-model="selectSpecialties"
+          class="border rounded-md p-2"
+        >
+          <option value="" disabled>Select a specialties</option>
           <option
             v-for="specialty in specialtiesStore.specialties"
             :key="specialty.id_especialidad"
@@ -142,7 +166,7 @@ const changePlan = () =>{
             {{ specialty.nombre_especialidad }}
           </option>
         </select>
-      </div>      
+      </div>
 
       <div class="w-full">
         <Table>
@@ -214,7 +238,7 @@ const changePlan = () =>{
       :docenteId="userStore.students"
       :show="slider"
       :group="sliderData"
-      :searchId = "[selectedPlan,selectSpecialties]"
+      :searchId="[selectedPlan, selectSpecialties]"
       @hide="hideSlider"
     />
   </AuthorizationFallback>

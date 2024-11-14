@@ -189,7 +189,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('planEspecialidad/{id}', [
         \App\Http\Controllers\PlanController::class,
         'getEspecialidadPrograma',
-    ])->middleware('permission:plan-all|plan-delete');
+    ])->middleware('permission:plan-all|plan-view');
 
     Route::post('plan', [
         \App\Http\Controllers\PlanController::class,
