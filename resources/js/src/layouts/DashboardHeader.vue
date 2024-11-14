@@ -115,6 +115,7 @@ const menuItems = [
     route: "grupos",
     permissions: ["groups-all", "groups-view"],
   },
+  
 
 ];
 

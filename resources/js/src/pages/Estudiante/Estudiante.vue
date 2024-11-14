@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, watch} from "vue";
 
 import Table from "../../components/table/Table.vue";
 import THead from "../../components/table/THead.vue";
@@ -54,14 +54,21 @@ const onDelete = (user) => {
     }
   });
 };
+
+//Observa cambios en props.id y recarga la lista de estudiantes
+watch(() => props.id, (newId) => {
+  userStore.loadStudents(newId);
+});
+
+
 </script>
 
 <template>
   <AuthorizationFallback :permissions="['students-all', 'students-view']">
     <div class="w-full space-y-4 py-6">
       <div class="flex-between">
-        <h2 class="text-active font-bold text-2xl">Estudiantes</h2>
-
+        <h2 v-if="props.id === 8" class="text-active font-bold text-2xl">Estudiantes</h2>
+        <h2 v-else="props.id" class="text-active font-bold text-2xl">Docentes</h2>
         <CreateButton @click="showSlider(true)" />
       </div>
 
@@ -121,6 +128,6 @@ const onDelete = (user) => {
       </div>
     </div>
 
-    <EstudianteSlider :show="slider" :user="sliderData" @hide="hideSlider" />
+    <EstudianteSlider :idUser="props.id" :show="slider" :user="sliderData" @hide="hideSlider" />
   </AuthorizationFallback>
 </template>

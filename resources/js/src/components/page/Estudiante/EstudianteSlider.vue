@@ -27,6 +27,10 @@ const props = defineProps({
     type: [Object, null],
     default: () => null,
   },
+  idUser:{
+    type: Number,
+    default: () => null,
+  },
 });
 const emit = defineEmits(["hide"]);
 
@@ -60,7 +64,7 @@ const initialFormData = () => {
     email: null,
     password: null,
     confirm_password: null,
-    roles: [8],
+    roles: [props.idUser],
   };
 };
 
@@ -108,7 +112,7 @@ const schema = yup.object().shape({
 });
 
 const onSubmit = async () => {
-  console.log("jaaaaaaaa");
+  //console.log("jaaaaaaaa");
 
   if (saving.value || updating.value) return;
 
@@ -133,7 +137,7 @@ const onSubmit = async () => {
 
   if (response?.id) {
     showToast(`Student ${props.user?.id ? "updated" : "created"} successfully`);
-    userStore.loadStudents();
+    userStore.loadStudents(props.idUser);
     emit("hide");
   }
 };
