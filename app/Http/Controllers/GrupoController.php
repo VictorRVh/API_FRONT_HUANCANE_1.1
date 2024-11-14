@@ -179,7 +179,7 @@ class GrupoController extends Controller
         // Filtrar grupos por usuario y plan
         $grupos = Grupo::where('id_docente', $usuario_id)  // Filtrar por id_docente
             ->where('id_plan', $plan_id)                    // Filtrar por id_plan
-            ->with(['sede', 'turno', 'especialidad', 'programa']) // Cargar las relaciones necesarias
+            ->with(['sede', 'turno', 'plan', 'especialidad', 'programa']) // Cargar las relaciones necesarias
             ->get();
 
         $grupos->each(function ($grupo) {
@@ -191,6 +191,10 @@ class GrupoController extends Controller
 
             if ($grupo->turno) {
                 $grupo->turno->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($grupo->plan) {
+                $grupo->plan->makeHidden(['created_at', 'updated_at']);
             }
 
             if ($grupo->especialidad) {
