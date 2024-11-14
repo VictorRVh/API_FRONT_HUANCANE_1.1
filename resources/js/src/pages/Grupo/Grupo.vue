@@ -21,7 +21,7 @@ import useModalToast from "../../composables/useModalToast";
 import useHttpRequest from "../../composables/useHttpRequest";
 
 import useRoleStore from "../../store/useRoleStore";
-import useUserStore from "../../store/useUserStore";
+
 import useAuth from "../../composables/useAuth";
 import GrupoSlider from "../../components/page/Grupo/GrupoSlider.vue";
 
@@ -33,21 +33,34 @@ import useStudentsStore from "../../store/Estudiante/useStudentStore";
 
 import { ref } from "vue"; // Asegúrate de incluir ref
 
-const userStoreOne = useUserStore();
 
-const specialtiesStore = ref(null);
-const userStore = ref(null);
-const placesStore = ref(null);
 
-if ((userStoreOne.user.roles[0].id === 7)) {
+const roleStore = useRoleStore();
+console.log("Roles victor: ",roleStore.role[0].id)
+
+let specialtiesStore;
+let userStore;
+let placesStore;
+
+const selectSpecialties = ref(0);
+
+
+if (roleStore.role[0].id) {
   specialtiesStore = useSpecialtyStore();
   if (!specialtiesStore.specialties?.length) await specialtiesStore.loadSpecialties();
   placesStore = usePlaceStore();
   if (!placesStore.Places?.length) await placesStore.loadPlaces();
-
   userStore = useStudentsStore();
   if (!userStore.students?.length) await userStore.loadStudents("7");
-} else {
+
+  if (specialtiesStore.specialties.length > 0) {
+    selectSpecialties.value =
+      specialtiesStore.specialties[
+        specialtiesStore.specialties.length - 1
+      ].id_especialidad;
+    // console.log("Especilidad seleccionado por defecto:", selectSpecialties.value);
+  }
+  // Cargar la especialidad correspondiente cuando se monta el componente
 }
 
 const planStore = usePlanStore();
@@ -62,18 +75,10 @@ if (planStore.plans.length > 0) {
   //console.log("Plan seleccionado por defecto:", selectedPlan.value);
 }
 
-const selectSpecialties = ref(0);
-
-if (specialtiesStore.specialties.length > 0) {
-  selectSpecialties.value =
-    specialtiesStore.specialties[specialtiesStore.specialties.length - 1].id_especialidad;
-  // console.log("Especilidad seleccionado por defecto:", selectSpecialties.value);
-}
-// Cargar la especialidad correspondiente cuando se monta el componente
-
 const router = useRouter(); // Aquí es donde obtenemos el router
-const roleStore = useRoleStore();
+
 const groupStore = useGroupsStore();
+
 
 if (!groupStore.groups?.length)
   await groupStore.loadGroups(selectedPlan.value, selectSpecialties.value);
@@ -114,7 +119,7 @@ const SeeMore = (id) => {
 //console.log("El nombre de la especialidad: ", specialtyStore.specialty);
 const changePlan = () => {
   groupStore.loadGroups(selectedPlan.value, selectSpecialties.value);
-  console.log("usuario rol : ", userStoreOne.user.roles[0].id);
+  //console.log("usuario rol : ", userStoreOne.user.roles[0].id);
 };
 </script>
 

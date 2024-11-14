@@ -11,14 +11,22 @@ const useRoleStore = defineStore('roles', () => {
     } = useHttpRequest('/roles');
 
     const roles = ref([]);
+    const role = ref(null);
+
     const loadRoles = async () => {
         const res = await getRoles();
         roles.value = res;
     };
 
+    const setRole = (authRole) => {
+          role.value = authRole;
+    };
+
     return {
+        role,
         roles,
         loadRoles,
+        setRole,
         rolesLoading,
         rolesFirstTimeLoading,
     };

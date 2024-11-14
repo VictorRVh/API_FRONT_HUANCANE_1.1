@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grupo;
+use App\Models\Matricula;
 use App\Models\Planes;
 use App\Models\Programa;
 use Illuminate\Http\Request;
@@ -171,5 +172,59 @@ class GrupoController extends Controller
         });
 
         return response()->json($grupos, 200);
+    }
+
+    public function getGruposPorUsuarioYPlan($usuario_id, $plan_id)
+    {
+        // Filtrar grupos por usuario y plan
+        $grupos = Grupo::where('id_docente', $usuario_id)  // Filtrar por id_docente
+            ->where('id_plan', $plan_id)                    // Filtrar por id_plan
+            ->with(['sede', 'turno', 'especialidad', 'programa']) // Cargar las relaciones necesarias
+            ->get();
+
+        $grupos->each(function ($grupo) {
+            $grupo->makeHidden(['created_at', 'updated_at']);
+
+            if ($grupo->sede) {
+                $grupo->sede->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($grupo->turno) {
+                $grupo->turno->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($grupo->especialidad) {
+                $grupo->especialidad->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($grupo->programa) {
+                $grupo->programa->makeHidden(['created_at', 'updated_at']);
+            }
+
+            if ($grupo->docente) {
+                $grupo->docente->makeHidden(['created_at', 'updated_at']);
+            }
+        });
+
+        return response()->json($grupos, 200);
+    }
+
+    public function getAlumnosPorGrupoYDocente($docente_id, $grupo_id)
+    {
+        $alumnos = Matricula::whereHas('grupos', function ($query) use ($docente_id, $grupo_id) {
+            $query->where('id_docente', $docente_id)
+                ->where('id_grupo', $grupo_id);
+        })
+            ->with('estudiante')
+            ->get();
+
+        $alumnos->each(function ($matricula) {
+            $matricula->makeHidden(['created_at', 'updated_at']); 
+            if ($matricula->estudiante) {
+                $matricula->estudiante->makeHidden(['created_at', 'updated_at', 'email_verified_at']); 
+            }
+        });
+
+        return response()->json($alumnos, 200);
     }
 }

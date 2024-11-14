@@ -7,11 +7,13 @@ import useHttpRequest from "../composables/useHttpRequest";
 import useValidation from "../composables/useValidation";
 import useAppRouter from "../composables/useAppRouter";
 import useUserStore from "../store/useUserStore";
+//import useRoleStore from "../store/useRoleStore";
 
 const { store: login, saving: loggingIn } = useHttpRequest("/login");
 const { runYupValidation } = useValidation();
 const { pushToRoute } = useAppRouter();
 const userStore = useUserStore();
+
 
 import { string, object } from "yup";
 
@@ -41,6 +43,7 @@ const onSignIn = async () => {
 
   if (user?.id) {
     userStore.setUser(user);
+    //console.log("estamosen login: ",user)
     await pushToRoute({ name: "users" });
   }
 };
